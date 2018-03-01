@@ -3,6 +3,7 @@ import {
   StyleSheet,
   View,
   ActivityIndicator,
+  PushNotificationIOS
 } from 'react-native'
 
 import {
@@ -18,6 +19,7 @@ import material from './native-base-theme/variables/material'
 
 import { NavigationActions, StackNavigator } from 'react-navigation'
 import { Provider } from 'react-redux'
+import PushNotification from 'react-native-push-notification'
 
 import API from './src/API'
 import { Settings } from './src/Settings'
@@ -244,6 +246,51 @@ export default class App extends Component {
       client = API.createClient(baseURL, user)
       if (user && user.isAuthenticated() && (user.hasRole('ROLE_COURIER') || user.hasRole('ROLE_ADMIN'))) {
         Registry.initWebSocketClient(client)
+
+        PushNotification.configure({
+
+          // (optional) Called when Token is generated (iOS and Android)
+          onRegister: function(token) {
+            console.log(`Push notification token for ${token.os}: ${token.token}`)
+            if (token.os === 'ios') {
+              client.post('/api/me/remote_push/ios', { token: token.token })
+                .then(remotePushToken => {
+                  console.log('Remote push token stored', remotePushToken)
+                })
+            }
+
+          },
+
+          // (required) Called when a remote or local notification is opened or received
+          onNotification: function(notification) {
+            console.log( 'NOTIFICATION:', notification );
+            // process the notification
+            // required on iOS only (see fetchCompletionHandler docs: https://facebook.github.io/react-native/docs/pushnotificationios.html)
+            notification.finish(PushNotificationIOS.FetchResult.NoData);
+          },
+
+          // ANDROID ONLY: GCM Sender ID (optional - not required for local notifications, but is need to receive remote push notifications)
+          // senderID: "YOUR GCM SENDER ID",
+
+          // IOS ONLY (optional): default: all - Permissions to register.
+          permissions: {
+            alert: true,
+            badge: true,
+            sound: true
+          },
+
+          // Should the initial notification be popped automatically
+          // default: true
+          popInitialNotification: true,
+
+          /**
+            * (optional) default: true
+            * - Specified if permissions (ios) and token (android and ios) will requested or not,
+            * - if not, you must call PushNotificationsHandler.requestPermissions() later
+            */
+          requestPermissions: true,
+      });
+
       }
     }
 
