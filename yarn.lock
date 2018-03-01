@@ -3780,9 +3780,9 @@ react-native-keyboard-aware-scroll-view@0.4.2:
     prop-types "^15.6.0"
     react-native-iphone-x-helper "^1.0.1"
 
-react-native-maps@0.20.0:
-  version "0.20.0"
-  resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.20.0.tgz#52ce428ecc47ddc54faee03cd2a8dc4813b00f91"
+react-native-maps@0.20.1:
+  version "0.20.1"
+  resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.20.1.tgz#b5247a9a26446b2e1ffc3f680db8ba6ccc960096"
   dependencies:
     babel-plugin-module-resolver "^2.3.0"
     babel-preset-react-native "1.9.0"
@@ -3821,9 +3821,9 @@ react-native-vector-icons@~4.4.2:
     prop-types "^15.5.10"
     yargs "^8.0.2"
 
-react-native@0.53.2:
-  version "0.53.2"
-  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.53.2.tgz#9f403043ee73112464c8520349fa342a4fbcec10"
+react-native@0.53.3:
+  version "0.53.3"
+  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.53.3.tgz#930d1de5d68866f32a4b55112fc0228e29784e8f"
   dependencies:
     absolute-path "^0.0.0"
     art "^0.10.0"
@@ -4606,9 +4606,9 @@ time-stamp@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/time-stamp/-/time-stamp-1.1.0.tgz#764a5a11af50561921b133f3b44e618687e0f5c3"
 
-tipsi-stripe@4.4.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/tipsi-stripe/-/tipsi-stripe-4.4.0.tgz#3d5c90f366754372775d0a5fc81144c6a5e670f6"
+tipsi-stripe@4.6.3:
+  version "4.6.3"
+  resolved "https://registry.yarnpkg.com/tipsi-stripe/-/tipsi-stripe-4.6.3.tgz#a591a3bb4c8162d808068ec41659858879d2dd51"
   dependencies:
     prop-types "^15.5.10"
 
