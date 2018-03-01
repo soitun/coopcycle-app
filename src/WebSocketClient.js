@@ -98,7 +98,7 @@ class WebSocketClient {
 
   onClose(resolve, reject, event) {
 
-    console.log('Connection close', event)
+    console.log('WebSocket closed')
     this.closeCount = this.closeCount + 1
 
     this.options.onDisconnect()
