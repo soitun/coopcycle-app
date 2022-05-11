@@ -1467,9 +1467,9 @@
     "@hapi/hoek" "^9.0.0"
 
 "@heasy/react-native-sunmi-printer@^1.5.3":
-  version "1.5.3"
-  resolved "https://registry.yarnpkg.com/@heasy/react-native-sunmi-printer/-/react-native-sunmi-printer-1.5.3.tgz#b3ea9f5fc24a00177801b43fbf0bce5f6c0e17e3"
-  integrity sha512-naLfZmPLtWELRkTxjH3pmNjk21Mq0MByb7Wf1Om5QpXo9q6g0RW3xzl1LIi0fveYFVWKZT8elSB4WXFbnm8F3Q==
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/@heasy/react-native-sunmi-printer/-/react-native-sunmi-printer-1.6.3.tgz#efd60390723528ea25b612320f6b2e7e7d2b1bfc"
+  integrity sha512-QpiNGZVia7+sXX6+3YD1ZtCoq7wQKNcREBLOOp0V20/J6l1dijJMFCSW/E/7L832hvbTbapXPXtdfB3Nx4iOjg==
 
 "@internationalized/date@3.0.0-alpha.1":
   version "3.0.0-alpha.1"
