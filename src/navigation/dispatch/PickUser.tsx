@@ -1,67 +1,64 @@
-import _ from 'lodash';
-import { connect } from 'react-redux';
 import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon, ArrowRightIcon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
-import { withTranslation } from 'react-i18next';
-import React, { Component } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import { greenColor, redColor, whiteColor } from '../../styles/common';
 import { selectUser } from '../../redux/App/selectors';
 import Avatar from '../../components/Avatar';
 import ItemSeparatorComponent from '../../components/ItemSeparator';
 
-class PickUser extends Component {
-  renderItem(user) {
-    return (
-      <TouchableOpacity
-        onPress={() => this.props.onItemPress(user)}
-        testID={`assignTo:${user.username}`}
-        style={styles.item}>
-        <Avatar baseURL={this.props.baseURL} username={user.username} />
-        <Text style={styles.itemText}>{user.username}</Text>
-        <Icon as={ArrowRightIcon} size="sm" />
-      </TouchableOpacity>
-    );
-  }
+export default function PickUser({ route }) {
+  const { t } = useTranslation();
+  const currentUser = useSelector(selectUser);
+  const baseURL = useSelector(state => state.app.baseURL);
+  const allUsers = useSelector(state => state.dispatch.users);
 
-  render() {
-    const {
-      onItemPress,
-      onUnassignButtonPress,
-      selfAssign,
-      showUnassignButton,
-      t,
-      user,
-      users,
-    } = this.props;
+  const { onItemPress, showUnassignButton, onUnassignButtonPress, withSelfAssignBtn = true } = route.params ?? {};
 
-    return (
-      <View style={{ flex: 1 }}>
-        {showUnassignButton && (
+  const users = useMemo(
+    () => allUsers.filter(u => u.roles.includes('ROLE_COURIER') && u.username !== currentUser.username),
+    [allUsers, currentUser.username],
+  );
+
+  const selfAssign = withSelfAssignBtn && currentUser.roles.includes('ROLE_COURIER');
+
+  return (
+    <View style={{ flex: 1 }}>
+      {showUnassignButton && (
+        <TouchableOpacity
+          style={styles.unassignButton}
+          onPress={() => onUnassignButtonPress()}
+          testID="unassignTask">
+          <Text style={styles.buttonText}>{t('DISPATCH_UNASSIGN')}</Text>
+        </TouchableOpacity>
+      )}
+      <FlatList
+        data={users}
+        keyExtractor={item => item.username}
+        renderItem={({ item }) => (
           <TouchableOpacity
-            style={styles.unassignButton}
-            onPress={() => onUnassignButtonPress()}
-            testID={`unassignTask`}>
-            <Text style={styles.buttonText}>{t('DISPATCH_UNASSIGN')}</Text>
+            onPress={() => onItemPress(item)}
+            testID={`assignTo:${item.username}`}
+            style={styles.item}>
+            <Avatar baseURL={baseURL} username={item.username} />
+            <Text style={styles.itemText}>{item.username}</Text>
+            <Icon as={ArrowRightIcon} size="sm" />
           </TouchableOpacity>
         )}
-        <FlatList
-          data={users}
-          keyExtractor={(item, index) => item.username}
-          renderItem={({ item, index }) => this.renderItem(item, index)}
-          ItemSeparatorComponent={ItemSeparatorComponent}
-        />
-        {selfAssign && (
-          <TouchableOpacity
-            style={styles.assignToMeButton}
-            onPress={() => onItemPress(user)}>
-            <Text style={styles.buttonText}>{t('DISPATCH_ASSIGN_TO_ME')}</Text>
-          </TouchableOpacity>
-        )}
-      </View>
-    );
-  }
+        ItemSeparatorComponent={ItemSeparatorComponent}
+      />
+      {selfAssign && (
+        <TouchableOpacity
+          style={styles.assignToMeButton}
+          onPress={() => onItemPress(currentUser)}>
+          <Text style={styles.buttonText}>{t('DISPATCH_ASSIGN_TO_ME')}</Text>
+        </TouchableOpacity>
+      )}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -91,25 +88,3 @@ const styles = StyleSheet.create({
     color: whiteColor,
   },
 });
-
-function mapStateToProps(state, ownProps) {
-  const user = selectUser(state);
-  const users = _.filter(
-    state.dispatch.users,
-    u => _.includes(u.roles, 'ROLE_COURIER') && u.username !== user.username,
-  );
-
-  const withSelfAssignBtn = ownProps.route.params?.withSelfAssignBtn || true;
-
-  return {
-    baseURL: state.app.baseURL,
-    users: users,
-    onItemPress: ownProps.route.params?.onItemPress,
-    showUnassignButton: ownProps.route.params?.showUnassignButton,
-    onUnassignButtonPress: ownProps.route.params?.onUnassignButtonPress,
-    selfAssign: withSelfAssignBtn && _.includes(user.roles, 'ROLE_COURIER'),
-    user,
-  };
-}
-
-export default connect(mapStateToProps)(withTranslation()(PickUser));

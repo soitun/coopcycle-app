@@ -12,6 +12,12 @@ import BasicSafeAreaView from '../../components/BasicSafeAreaView';
 import SearchInput from '../../components/SearchInput';
 import { useGetStoresQuery, useGetTagsQuery, useGetRestaurantsQuery } from '../../redux/api/slice';
 
+const normalizeString = (str: string) =>
+  str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+
 export default function KeywordsFilters() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -25,13 +31,6 @@ export default function KeywordsFilters() {
   const { data: stores = [] } = useGetStoresQuery();
   const { data: restaurants = [] } = useGetRestaurantsQuery();
   const { data: tags = [] } = useGetTagsQuery();
-
-  // Normalize string for search
-  const normalizeString = str =>
-    str
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase();
 
   // Filter stores based on keyword
   const filteredItems = useMemo(() => {
@@ -92,6 +91,9 @@ export default function KeywordsFilters() {
                   data={filteredItems}
                   keyExtractor={item => item.id}
                   keyboardShouldPersistTaps="handled"
+                  initialNumToRender={10}
+                  maxToRenderPerBatch={5}
+                  windowSize={5}
                   renderItem={({ item }) => (
                     <TouchableOpacity
                       style={styles.suggestionItem}

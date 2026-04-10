@@ -71,39 +71,9 @@ export function useAllTasks(date: moment.Moment) {
       // @TODO SEE IF WE CAN GIVE A CACHE TTL...!
     });
 
-  const isError = useMemo(() => {
-    return (
-      isErrorCourierUsers || isErrorTaskLists || isErrorTasks || isErrorTours
-    );
-  }, [isErrorCourierUsers, isErrorTaskLists, isErrorTasks, isErrorTours]);
-
-  const isLoading = useMemo(() => {
-    return (
-      isLoadingCourierUsers ||
-      isLoadingTaskLists ||
-      isLoadingTasks ||
-      isLoadingTours
-    );
-  }, [
-    isLoadingCourierUsers,
-    isLoadingTaskLists,
-    isLoadingTasks,
-    isLoadingTours,
-  ]);
-
-  const isFetching = useMemo(() => {
-    return (
-      isFetchingCourierUsers ||
-      isFetchingTaskLists ||
-      isFetchingTasks ||
-      isFetchingTours
-    );
-  }, [
-    isFetchingCourierUsers,
-    isFetchingTaskLists,
-    isFetchingTasks,
-    isFetchingTours,
-  ]);
+  const isError = isErrorCourierUsers || isErrorTaskLists || isErrorTasks || isErrorTours;
+  const isLoading = isLoadingCourierUsers || isLoadingTaskLists || isLoadingTasks || isLoadingTours;
+  const isFetching = isFetchingCourierUsers || isFetchingTaskLists || isFetchingTasks || isFetchingTours;
 
   useEffect(() => {
     if (

@@ -35,7 +35,9 @@ import {
 import { selectIsExpandedSection } from '../../../redux/Dispatch/selectors';
 import { withLinkedTasks } from '../../../shared/src/logistics/redux/taskUtils';
 import BulkEditTasksFloatingButton from './BulkEditTasksFloatingButton';
-import TaskListItem from '../../../components/TaskListItem';
+import TaskListItemBase from '../../../components/TaskListItem';
+
+const TaskListItem = memo(TaskListItemBase);
 //import ItemSeparatorComponent from '../../../components/ItemSeparator';
 import useSetTaskListItems from '../../../shared/src/logistics/redux/hooks/useSetTaskListItems';
 import { getOrderNumber } from '../../../utils/tasks';
@@ -334,10 +336,9 @@ export default function GroupedTasks({
     ({ section, item: task, index }) => {
       const tasks = section.data;
       const nextTask = index < tasks.length - 1 ? tasks[index + 1] : null;
-      const MemoizedTaskListItem = memo(TaskListItem);
 
       return (
-        <MemoizedTaskListItem
+        <TaskListItem
           taskListId={section.id}
           appendTaskListTestID={section.appendTaskListTestID}
           task={task}

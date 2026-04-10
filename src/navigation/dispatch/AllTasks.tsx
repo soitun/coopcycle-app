@@ -9,10 +9,8 @@ import { useTranslation } from 'react-i18next';
 import { initialize } from '../../redux/Dispatch/actions';
 import { clearSelectedTasks } from '../../redux/Dispatch/updateSelectedTasksSlice';
 import {
-  selectDispatchUiTaskFilters,
   selectFilteredTaskLists,
   selectFilteredUnassignedTasksNotCancelled,
-  selectKeywordFilters,
 } from '../../redux/Dispatch/selectors';
 import { selectSelectedDate } from '../../shared/logistics/redux';
 import { useAllTasks } from './useAllTasks';
@@ -24,15 +22,12 @@ import { useTaskListsContext } from '../courier/contexts/TaskListsContext';
 export default function AllTasks({ navigation, route }) {
   const { t } = useTranslation();
   const context = useTaskListsContext();
+  const isEditMode = context?.isEditMode;
+  const clearSelectedTasksFromContext = context?.clearSelectedTasks;
 
   const selectedDate = useSelector(selectSelectedDate);
-  const uiFilters = useSelector(selectDispatchUiTaskFilters);
-  const keywordFilters = useSelector(selectKeywordFilters);
-  const allFilters = [...uiFilters, ...keywordFilters];
-  const unassignedTasks = useSelector(
-    selectFilteredUnassignedTasksNotCancelled(allFilters),
-  );
-  const taskLists = useSelector(selectFilteredTaskLists(allFilters));
+  const unassignedTasks = useSelector(selectFilteredUnassignedTasksNotCancelled);
+  const taskLists = useSelector(selectFilteredTaskLists);
 
   const dispatch = useDispatch();
 
@@ -47,8 +42,8 @@ export default function AllTasks({ navigation, route }) {
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      if (context?.isEditMode) {
-        context?.clearSelectedTasks();
+      if (isEditMode) {
+        clearSelectedTasksFromContext?.();
         dispatch(clearSelectedTasks());
         return true;
       }
@@ -56,7 +51,7 @@ export default function AllTasks({ navigation, route }) {
     });
 
     return () => backHandler.remove();
-  }, [context, dispatch]);
+  }, [isEditMode, clearSelectedTasksFromContext, dispatch]);
 
   useEffect(() => {
     InteractionManager.runAfterInteractions(() => {
