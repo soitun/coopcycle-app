@@ -25,29 +25,29 @@ export const selectDispatchUiTaskFilters = createSelector(
     taskFilters.filter(taskFilter => !Object.keys(taskFilter).includes('tags')),
 );
 
-export const selectFilteredUnassignedTasksNotCancelled = filters =>
-  createSelector(selectUnassignedTasksNotCancelled, tasks =>
-    filterTasks(tasks, filters),
-  );
+export const selectAllDispatchFilters = createSelector(
+  selectDispatchUiTaskFilters,
+  selectKeywordFilters,
+  (uiFilters, keywordFilters) => [...uiFilters, ...keywordFilters],
+);
 
-export const selectFilteredTaskLists = filters =>
-  createSelector(
-    selectTaskLists,
-    selectTasksEntities,
-    (taskLists, taskEntities) => {
-      const filteredTaskLists = taskLists.map(taskList => {
-        const filteredTaskList = { ...taskList };
+export const selectFilteredUnassignedTasksNotCancelled = createSelector(
+  selectUnassignedTasksNotCancelled,
+  selectAllDispatchFilters,
+  (tasks, filters) => filterTasks(tasks, filters),
+);
 
-        const tasks = getTaskListTasks(taskList, taskEntities);
-        const filteredTasks = filterTasks(tasks, filters);
-        filteredTaskList.tasksIds = filteredTasks.map(task => task['@id']);
-
-        return filteredTaskList;
-      });
-
-      return filteredTaskLists;
-    },
-  );
+export const selectFilteredTaskLists = createSelector(
+  selectTaskLists,
+  selectTasksEntities,
+  selectAllDispatchFilters,
+  (taskLists, taskEntities, filters) =>
+    taskLists.map(taskList => {
+      const tasks = getTaskListTasks(taskList, taskEntities);
+      const filteredTasks = filterTasks(tasks, filters);
+      return { ...taskList, tasksIds: filteredTasks.map(task => task['@id']) };
+    }),
+);
 
 export const selectKeywordFilters = state => state.dispatch.ui.keywordFilters;
 

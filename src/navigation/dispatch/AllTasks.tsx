@@ -9,10 +9,8 @@ import { useTranslation } from 'react-i18next';
 import { initialize } from '../../redux/Dispatch/actions';
 import { clearSelectedTasks } from '../../redux/Dispatch/updateSelectedTasksSlice';
 import {
-  selectDispatchUiTaskFilters,
   selectFilteredTaskLists,
   selectFilteredUnassignedTasksNotCancelled,
-  selectKeywordFilters,
 } from '../../redux/Dispatch/selectors';
 import { selectSelectedDate } from '../../shared/logistics/redux';
 import { useAllTasks } from './useAllTasks';
@@ -26,13 +24,8 @@ export default function AllTasks({ navigation, route }) {
   const context = useTaskListsContext();
 
   const selectedDate = useSelector(selectSelectedDate);
-  const uiFilters = useSelector(selectDispatchUiTaskFilters);
-  const keywordFilters = useSelector(selectKeywordFilters);
-  const allFilters = [...uiFilters, ...keywordFilters];
-  const unassignedTasks = useSelector(
-    selectFilteredUnassignedTasksNotCancelled(allFilters),
-  );
-  const taskLists = useSelector(selectFilteredTaskLists(allFilters));
+  const unassignedTasks = useSelector(selectFilteredUnassignedTasksNotCancelled);
+  const taskLists = useSelector(selectFilteredTaskLists);
 
   const dispatch = useDispatch();
 
