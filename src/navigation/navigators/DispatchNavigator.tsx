@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { memo } from 'react';
 import { clearSelectedTasks } from '../../redux/Dispatch/updateSelectedTasksSlice';
 import { createDeliverySuccess } from '../../redux/Store/actions';
 import { DeliveryCallbackProvider } from '../delivery/contexts/DeliveryCallbackContext';
@@ -134,7 +135,7 @@ function Tabs() {
 
 const RootStack = createStackNavigator();
 
-const HeaderLeftButton = ({navigation}) => {
+const HeaderLeftButton = memo(({navigation}) => {
   const context = useTaskListsContext();
   const dispatch = useDispatch();
 
@@ -157,9 +158,9 @@ const HeaderLeftButton = ({navigation}) => {
   }
 
   return headerLeft(navigation, 'menuBtnDispatch')();
-};
+});
 
-const HeaderRightBody = ({navigation}) => {
+const HeaderRightBody = memo(({navigation}) => {
   const context = useTaskListsContext();
   const selectedTasks = context?.selectedTasksToEdit || [];
 
@@ -185,7 +186,7 @@ const HeaderRightBody = ({navigation}) => {
       />}
     </>
   );
-};
+});
 
 export default function DispatchNavigator({ navigation }) {
   const taskListsContext = useTaskListsContext();
