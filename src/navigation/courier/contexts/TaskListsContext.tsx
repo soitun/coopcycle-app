@@ -1,4 +1,4 @@
-import { FC, ReactNode, createContext, useContext, useEffect, useState } from 'react';
+import { FC, ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import Task from '@/src/types/task';
 import { useIsFocused } from '@react-navigation/native';
 
@@ -37,7 +37,7 @@ export const TaskListsProvider: FC<TaskListsProviderProps> = ({ children, defaul
     }
   }, [isFocused]);
 
-  const toggleTaskSelection = (task: Task) => {
+  const toggleTaskSelection = useCallback((task: Task) => {
     setSelectedTasksToEdit(prev => {
       const exists = prev.some(t => t['@id'] === task['@id']);
       let tasks;
@@ -49,14 +49,14 @@ export const TaskListsProvider: FC<TaskListsProviderProps> = ({ children, defaul
       setIsEditMode(tasks.length > 0);
       return tasks;
     });
-  };
+  }, []);
 
-  const clearSelectedTasks = () => {
+  const clearSelectedTasks = useCallback(() => {
     setSelectedTasksToEdit([]);
     setIsEditMode(false);
-  };
+  }, []);
 
-  const value: TaskListsContextType = {
+  const value: TaskListsContextType = useMemo(() => ({
     selectedTasksToEdit,
     isEditMode,
     isFromCourier,
@@ -65,7 +65,7 @@ export const TaskListsProvider: FC<TaskListsProviderProps> = ({ children, defaul
     setIsFromCourier,
     toggleTaskSelection,
     clearSelectedTasks,
-  };
+  }), [selectedTasksToEdit, isEditMode, isFromCourier, setSelectedTasksToEdit, setIsEditMode, setIsFromCourier, toggleTaskSelection, clearSelectedTasks]);
 
   return (
     <TaskListsContext.Provider value={value}>
