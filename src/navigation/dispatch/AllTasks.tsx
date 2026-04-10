@@ -22,6 +22,8 @@ import { useTaskListsContext } from '../courier/contexts/TaskListsContext';
 export default function AllTasks({ navigation, route }) {
   const { t } = useTranslation();
   const context = useTaskListsContext();
+  const isEditMode = context?.isEditMode;
+  const clearSelectedTasksFromContext = context?.clearSelectedTasks;
 
   const selectedDate = useSelector(selectSelectedDate);
   const unassignedTasks = useSelector(selectFilteredUnassignedTasksNotCancelled);
@@ -40,8 +42,8 @@ export default function AllTasks({ navigation, route }) {
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      if (context?.isEditMode) {
-        context?.clearSelectedTasks();
+      if (isEditMode) {
+        clearSelectedTasksFromContext?.();
         dispatch(clearSelectedTasks());
         return true;
       }
@@ -49,7 +51,7 @@ export default function AllTasks({ navigation, route }) {
     });
 
     return () => backHandler.remove();
-  }, [context, dispatch]);
+  }, [isEditMode, clearSelectedTasksFromContext, dispatch]);
 
   useEffect(() => {
     InteractionManager.runAfterInteractions(() => {
