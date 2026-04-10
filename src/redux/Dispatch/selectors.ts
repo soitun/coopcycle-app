@@ -25,6 +25,8 @@ export const selectDispatchUiTaskFilters = createSelector(
     taskFilters.filter(taskFilter => !Object.keys(taskFilter).includes('tags')),
 );
 
+export const selectKeywordFilters = state => state.dispatch.ui.keywordFilters;
+
 export const selectAllDispatchFilters = createSelector(
   selectDispatchUiTaskFilters,
   selectKeywordFilters,
@@ -48,8 +50,6 @@ export const selectFilteredTaskLists = createSelector(
       return { ...taskList, tasksIds: filteredTasks.map(task => task['@id']) };
     }),
 );
-
-export const selectKeywordFilters = state => state.dispatch.ui.keywordFilters;
 
 export const selectSelectedTasks = state => state.dispatch.ui.selectedTasks;
 
