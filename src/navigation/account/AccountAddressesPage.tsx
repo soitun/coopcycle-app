@@ -2,7 +2,7 @@ import { Divider } from '@/components/ui/divider';
 import { HStack } from '@/components/ui/hstack';
 import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { withTranslation } from 'react-i18next';
 import { FlatList, Image, TouchableOpacity, View } from 'react-native';
 import { connect } from 'react-redux';
@@ -16,25 +16,43 @@ import {
 } from '../../redux/Checkout/actions';
 import { selectAddresses } from '../../redux/Checkout/selectors';
 import { greyColor } from '../../styles/common';
-import { useSecondaryTextColor } from '../../styles/theme';
 import Address from '../../utils/Address';
 
 interface AccountAddressesPageProps {
   onSelect?(...args: unknown[]): unknown;
+  addresses: object[];
 }
 
-class AccountAddressesPage extends Component<AccountAddressesPageProps> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      refreshing: false,
-      focused: false,
-    };
-  }
+function EmptyAddressList() {
+  return (
+    <View style={{ alignItems: 'center', padding: 10 }}>
+      <Image
+        style={{
+          maxWidth: '40%',
+          maxHeight: '30%',
+          marginVertical: '5%',
+          margin: 'auto',
+        }}
+        source={require('../../assets/images/no_addresses.png')}
+        resizeMode={'contain'}
+      />
+      <Heading>Hey oh !</Heading>
+      <Text>{i18n.t('EMPTY_HERE')}</Text>
+    </View>
+  );
+}
 
-  _renderRow({ item }) {
-    const color = this.props.address
-      ? Address.geoDiff(this.props.address, item)
+function AccountAddressesPage(props: AccountAddressesPageProps) {
+  const [refreshing, setRefreshing] = useState(false);
+  const [focused, setFocused] = useState(false);
+
+  const { addresses } = props;
+
+  const textInputContainerHeight = 54;
+
+  function renderRow({ item }) {
+    const color = props.address
+      ? Address.geoDiff(props.address, item)
         ? greyColor
         : 'transparent'
       : 'transparent';
@@ -42,9 +60,9 @@ class AccountAddressesPage extends Component<AccountAddressesPageProps> {
     return (
       <TouchableOpacity
         onPress={() => {
-          this.props.setAddress(item);
+          props.setAddress(item);
           //TODO: Need to be more robust that a simple goBack()
-          this.props.navigation.goBack();
+          props.navigation.goBack();
         }}>
         <HStack
           style={{ backgroundColor: color }}
@@ -56,74 +74,49 @@ class AccountAddressesPage extends Component<AccountAddressesPageProps> {
     );
   }
 
-  render() {
-    const { addresses } = this.props;
-    const textInputContainerHeight = 54;
-    return (
+  return (
+    <View style={{ flex: 1 }}>
       <View style={{ flex: 1 }}>
-        <View style={{ flex: 1 }}>
-          <AddressAutocomplete
-            containerStyle={{
-              paddingHorizontal: 15,
-              paddingVertical: 10,
+        <AddressAutocomplete
+          containerStyle={{
+            paddingHorizontal: 15,
+            paddingVertical: 10,
+          }}
+          inputContainerStyle={{
+            height: textInputContainerHeight,
+          }}
+          style={{
+            height: textInputContainerHeight * 0.7,
+          }}
+          placeholder={i18n.t('ENTER_NEW_ADDRESS')}
+          onChangeText={text => setFocused(text.length >= 3)}
+          onSelectAddress={address => {
+            props.navigation.navigate('AddressDetails', { address });
+          }}
+          onBlur={() => setFocused(false)}
+        />
+      </View>
+      {!focused && (
+        <View style={{ flex: 4 }}>
+          <Divider />
+          <Heading className="my-3 px-2">{i18n.t('MY_ADDRESSES')}</Heading>
+          <FlatList
+            keyExtractor={(item, index) => `address-${index}`}
+            data={addresses}
+            refreshing={refreshing}
+            onRefresh={async () => {
+              setRefreshing(true);
+              await props.loadAddresses();
+              setRefreshing(false);
             }}
-            inputContainerStyle={{
-              height: textInputContainerHeight,
-            }}
-            style={{
-              height: textInputContainerHeight * 0.7,
-            }}
-            placeholder={i18n.t('ENTER_NEW_ADDRESS')}
-            onChangeText={text => this.setState({ focused: text.length >= 3 })}
-            onSelectAddress={address => {
-              this.props.navigation.navigate('AddressDetails', { address });
-            }}
-            onBlur={() => this.setState({ focused: false })}
+            ItemSeparatorComponent={ItemSeparator}
+            ListEmptyComponent={EmptyAddressList}
+            renderItem={renderRow}
           />
         </View>
-        {!this.state.focused && (
-          <View style={{ flex: 4 }}>
-            <Divider />
-            <Heading className="my-3 px-2">{i18n.t('MY_ADDRESSES')}</Heading>
-            <FlatList
-              keyExtractor={(item, index) => `address-${index}`}
-              data={addresses}
-              refreshing={this.state.refreshing}
-              onRefresh={async () => {
-                this.setState({ refreshing: true });
-                await this.props.loadAddresses();
-                this.setState({ refreshing: false });
-              }}
-              ItemSeparatorComponent={ItemSeparator}
-              ListEmptyComponent={
-                <View
-                  style={{
-                    alignItems: 'center',
-                    padding: 10,
-                  }}>
-                  <Image
-                    style={{
-                      maxWidth: '40%',
-                      maxHeight: '30%',
-                      marginVertical: '5%',
-                      margin: 'auto',
-                    }}
-                    source={require('../../assets/images/no_addresses.png')}
-                    resizeMode={'contain'}
-                  />
-                  <Heading>Hey oh !</Heading>
-                  <Text color={this.props.secondaryTextColor}>
-                    {i18n.t('EMPTY_HERE')}
-                  </Text>
-                </View>
-              }
-              renderItem={this._renderRow.bind(this)}
-            />
-          </View>
-        )}
-      </View>
-    );
-  }
+      )}
+    </View>
+  );
 }
 
 function mapStateToProps(state, ownProps) {
@@ -161,16 +154,7 @@ function mapDispatchToProps(dispatch, ownProps) {
   };
 }
 
-function withHooks(ClassComponent) {
-  return function CompWithHook(props) {
-    const secondaryTextColor = useSecondaryTextColor();
-    return (
-      <ClassComponent {...props} secondaryTextColor={secondaryTextColor} />
-    );
-  };
-}
-
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(withTranslation()(withHooks(AccountAddressesPage)));
+)(withTranslation()(AccountAddressesPage));
