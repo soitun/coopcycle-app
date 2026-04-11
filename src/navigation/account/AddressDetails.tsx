@@ -1,41 +1,53 @@
 import {
   FormControl,
-  FormControlLabel,
   FormControlHelper,
   FormControlHelperText,
+  FormControlLabel,
   FormControlLabelText,
 } from '@/components/ui/form-control';
 import { Input, InputField } from '@/components/ui/input';
 import { Heading } from '@/components/ui/heading';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Divider } from '@/components/ui/divider';
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 import { Dimensions, ScrollView, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { connect } from 'react-redux';
-import KeyboardAdjustView from '../../components/KeyboardAdjustView';
 import { loadAddresses, newAddress } from '../../redux/Account/actions';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
+import { Textarea, TextareaInput } from '@/components/ui/textarea';
+import { useKeyboardController } from 'react-native-keyboard-controller'
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-class AddressDetails extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { name: '', description: '' };
+function AddressDetails({ address, navigation, newAddress: saveNewAddress, t }) {
+
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+
+  const insets = useSafeAreaInsets();
+  const { enabled, setEnabled } = useKeyboardController();
+
+  useEffect(() => {
+    setEnabled(true);
+  }, [setEnabled])
+
+  const { latitude, longitude } = address.geo;
+  const { width } = Dimensions.get('window');
+  const LATITUDE_DELTA = 0.002;
+  const LONGITUDE_DELTA = LATITUDE_DELTA * (width / (width * 0.55));
+
+  function save() {
+    saveNewAddress({ ...address, name, description });
+    navigation.goBack();
   }
 
-  render() {
-    const { latitude, longitude } = this.props.address.geo;
-    const { width } = Dimensions.get('window');
-    const LATITUDE_DELTA = 0.002;
-    const LONGITUDE_DELTA = LATITUDE_DELTA * (width / (width * 0.55));
-
-    const _save = () => {
-      this.props.newAddress({ ...this.props.address, ...this.state });
-      this.props.navigation.goBack();
-    };
-
-    return (
-      <KeyboardAdjustView style={{ flex: 1 }}>
+  return (
+    <KeyboardAvoidingView
+      behavior="padding"
+      keyboardVerticalOffset={100}
+      style={{ flex: 1 }}>
+      <View style={{ flex: 1, paddingBottom: insets.bottom, justifyContent: 'space-between' }}>
         <MapView
           style={{
             height: width * 0.55,
@@ -51,52 +63,42 @@ class AddressDetails extends Component {
           <Marker coordinate={{ latitude, longitude }} />
         </MapView>
         <ScrollView style={{ padding: 15 }}>
-          <Heading>{this.props.address.streetAddress}</Heading>
+          <Heading>{address.streetAddress}</Heading>
           <Divider className="my-3" />
           <FormControl className="mb-5">
             <FormControlLabel>
-              <FormControlLabelText>{this.props.t('NAME')}</FormControlLabelText>
+              <FormControlLabelText>{t('NAME')}</FormControlLabelText>
             </FormControlLabel>
             <Input>
               <InputField
-                onChange={({ nativeEvent: { text } }) =>
-                  this.setState({ name: text })
-                }
+                onChange={({ nativeEvent: { text } }) => setName(text)}
               />
             </Input>
           </FormControl>
-
           <FormControl className="mb-5">
             <FormControlLabel>
-              <FormControlLabelText>{this.props.t('CHECKOUT_ORDER_ADDRESS_DESCRIPTION')}</FormControlLabelText>
+              <FormControlLabelText>
+                {t('CHECKOUT_ORDER_ADDRESS_DESCRIPTION')}
+              </FormControlLabelText>
             </FormControlLabel>
-            <Input>
-              <InputField
-                multiline
-                numberOfLines={3}
-                onChange={({ nativeEvent: { text } }) =>
-                  this.setState({ description: text })
-                }
-              />
-            </Input>
+            <Textarea size="md">
+              <TextareaInput onChangeText={text => setDescription(text)} />
+            </Textarea>
             <FormControlHelper>
               <FormControlHelperText>
-                {this.props.t('CHECKOUT_ORDER_ADDRESS_DESCRIPTION_HELP')}
+                {t('CHECKOUT_ORDER_ADDRESS_DESCRIPTION_HELP')}
               </FormControlHelperText>
             </FormControlHelper>
           </FormControl>
         </ScrollView>
-        <View
-          style={{
-            padding: 20,
-          }}>
-          <Button className="mt-2" onPress={_save}>
-            <ButtonText>{this.props.t('SAVE_AND_CONTINUE')}</ButtonText>
+        <View style={{ padding: 20 }}>
+          <Button className="mt-2" onPress={save}>
+            <ButtonText>{t('SAVE_AND_CONTINUE')}</ButtonText>
           </Button>
         </View>
-      </KeyboardAdjustView>
-    );
-  }
+      </View>
+    </KeyboardAvoidingView>
+  );
 }
 
 function mapStateToProps(state, ownProps) {
