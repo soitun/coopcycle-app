@@ -60,9 +60,7 @@ function AccountAddressesPage(props: AccountAddressesPageProps) {
     return (
       <TouchableOpacity
         onPress={() => {
-          props.setAddress(item);
-          //TODO: Need to be more robust that a simple goBack()
-          props.navigation.goBack();
+          props.navigation.navigate('AddressDetails', { address: item });
         }}>
         <HStack
           style={{ backgroundColor: color }}
