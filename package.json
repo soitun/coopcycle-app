@@ -61,6 +61,7 @@
     "esc-pos-encoder": "^2.0.2",
     "expo": "^54.0.27",
     "expo-camera": "17.0.10",
+    "expo-image-manipulator": "~14.0.8",
     "expo-image-picker": "17.0.9",
     "expo-notifications": "0.32.14",
     "formik": "^2.4.6",

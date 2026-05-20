@@ -295,6 +295,7 @@
     "TASK_IMAGE_UPLOAD_CONFIRM_SHORT": "Image uploaded!",
     "TASK_IMAGE_UPLOAD_CONFIRM_LONG": "Image was successfully uploaded",
     "AN_ERROR_OCCURRED": "An error occurred",
+    "FILE_TOO_LARGE": "The file is too large to upload (max 5 MB). Please retake the photo.",
     "DELIVERY_ASAP": "As soon as possible",
     "CART_DELIVERY_TIME": "Delivery {{- fromNow}}",
     "CART_DELIVERY_TIME_DIFF": "Delivery in {{diff}} minutes",

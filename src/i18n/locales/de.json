@@ -361,6 +361,7 @@
     "STORE_NEW_DELIVERY_CONTACT_NAME": "Name der Kontaktperson",
     "TIME_DIFF_SHORT": "{{min}} - {{max}} Minuten",
     "AN_ERROR_OCCURRED": "ein Fehler ist aufgetreten",
+    "FILE_TOO_LARGE": "The file is too large to upload (max 5 MB). Please retake the photo.",
     "LOAD_MORE": "mehr anzeigen",
     "SIGNATURE_CLEAR": "abwischen",
     "ORDER_NEW_HELP": "das Restaurant muss deine Bestellung noch annehmen",

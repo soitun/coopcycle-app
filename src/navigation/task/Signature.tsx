@@ -12,6 +12,7 @@ import { v4 } from 'uuid';
 
 import { addSignature } from '../../redux/Courier';
 import { navigateBackToCompleteTask } from '@/src/navigation/utils';
+import { compressImage } from '../../utils/imageCompression';
 
 // Hide footer
 // https://github.com/YanYuanFE/react-native-signature-canvas#basic-parameters
@@ -42,7 +43,7 @@ class Signature extends Component {
     this.signatureRef.current?.readSignature();
   }
 
-  handleOK(base64) {
+  async handleOK(base64) {
 
     const directory = new Directory(Paths.document, 'pending_uploads');
     if (!directory.exists) directory.create();
@@ -52,8 +53,10 @@ class Signature extends Component {
       Uint8Array.from(atob(base64.replace('data:image/jpeg;base64,', '')), c => c.charCodeAt(0))
     );
 
+    const compressed = await compressImage(file.uri);
+
     const task = this.props.route.params?.task;
-    this.props.addSignature(task, file.uri);
+    this.props.addSignature(task, compressed);
     navigateBackToCompleteTask(this.props.navigation, this.props.route);
   }
 

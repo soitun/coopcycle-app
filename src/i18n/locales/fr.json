@@ -289,6 +289,7 @@
     "TASK_IMAGE_UPLOAD_CONFIRM_SHORT": "Image uploadée !",
     "TASK_IMAGE_UPLOAD_CONFIRM_LONG": "L'image a été uploadée avec succès",
     "AN_ERROR_OCCURRED": "Une erreur s'est produite",
+    "FILE_TOO_LARGE": "Le fichier est trop volumineux pour être envoyé (max 5 Mo). Veuillez reprendre la photo.",
     "TASK_ADD_PROOF_OF_DELIVERY": "Ajouter une preuve de livraison",
     "STORE_NEW_DELIVERY_PICKUP_TITLE": "Adresse de récupération",
     "STORE_NEW_DELIVERY_PICKUP_DESCRIPTION": "Indiquez une adresse de récupération ou garder l'address de livraison par défaut pour récupérer la commande",

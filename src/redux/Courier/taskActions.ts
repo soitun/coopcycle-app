@@ -3,6 +3,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import { Alert } from 'react-native';
 import { createAction } from 'redux-actions';
+import * as FileSystem from 'expo-file-system/legacy';
 
 import { File } from 'expo-file-system';
 
@@ -31,6 +32,18 @@ import { DateISOString } from '../../utils/date-types';
 import Task from '@/src/types/task';
 import { Incident } from '@/src/redux/api/types';
 import { AppDispatch, RootState } from '@/src/redux/store';
+
+const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB — matches server limit
+
+async function findOversizedFiles(uris: string[]): Promise<string[]> {
+  const results = await Promise.all(
+    uris.map(uri => FileSystem.getInfoAsync(uri)),
+  );
+  return uris.filter((_, i) => {
+    const info = results[i];
+    return info != null && info.exists && 'size' in info && (info.size as number) > MAX_FILE_SIZE_BYTES;
+  });
+}
 
 /*
  * Action Types
@@ -270,24 +283,37 @@ export function processUploadQueue() {
     console.log(`Processing ${jobs.length} pending upload job(s)`);
 
     for (const job of jobs) {
-      const response = await httpClient.uploadFileAsync(
-        job.uploadUrl,
-        job.fileUri,
-        { headers: { 'X-Attach-To': job.attachTo.join(';') } },
-      );
+      try {
+        const response = await httpClient.uploadFileAsync(
+          job.uploadUrl,
+          job.fileUri,
+          { headers: { 'X-Attach-To': job.attachTo.join(';') } },
+        );
 
-      if (response && response.status >= 200 && response.status < 300) {
-        await UploadQueue.markDone(job.id);
-        try {
-          new File(job.fileUri).delete();
-        } catch (e) {
-          console.warn('Could not delete uploaded file', e);
+        if (response && response.status >= 200 && response.status < 300) {
+          await UploadQueue.markDone(job.id);
+          try {
+            new File(job.fileUri).delete();
+          } catch (e) {
+            console.warn('Could not delete uploaded file', e);
+          }
+        } else {
+          console.warn('Upload failed with status', response?.status);
+          await UploadQueue.markDone(job.id);
+          Alert.alert(
+            i18n.t('FAILED_TASK_COMPLETE'),
+            i18n.t('AN_ERROR_OCCURRED'),
+            [{ text: 'OK' }],
+            { cancelable: false },
+          );
         }
-      } else {
-        console.warn('Upload failed with status', response?.status);
+      } catch (e) {
+        const status = axios.isAxiosError(e) ? e.response?.status : undefined;
+        console.warn('Upload error, status:', status, e);
+        await UploadQueue.markDone(job.id);
         Alert.alert(
           i18n.t('FAILED_TASK_COMPLETE'),
-          i18n.t('AN_ERROR_OCCURRED'),
+          status === 413 ? i18n.t('FILE_TOO_LARGE') : i18n.t('AN_ERROR_OCCURRED'),
           [{ text: 'OK' }],
           { cancelable: false },
         );
@@ -303,7 +329,17 @@ export function reportIncident(
   failureReasonMetadata = [],
   onSuccess,
 ) {
-  return function (dispatch, getState) {
+  return async function (dispatch, getState) {
+    const files = [
+      ...selectSignatures(getState()),
+      ...selectPictures(getState()),
+    ];
+    const oversized = await findOversizedFiles(files);
+    if (oversized.length > 0) {
+      Alert.alert(i18n.t('FAILED_TASK_COMPLETE'), i18n.t('FILE_TOO_LARGE'));
+      return;
+    }
+
     const httpClient = selectHttpClient(getState());
 
     const payload = {
@@ -398,7 +434,17 @@ export function markTaskFailed(
 }
 
 export function markTaskDone(task, notes = '', onSuccess, contactName = '') {
-  return function (dispatch, getState) {
+  return async function (dispatch, getState) {
+    const files = [
+      ...selectSignatures(getState()),
+      ...selectPictures(getState()),
+    ];
+    const oversized = await findOversizedFiles(files);
+    if (oversized.length > 0) {
+      Alert.alert(i18n.t('FAILED_TASK_COMPLETE'), i18n.t('FILE_TOO_LARGE'));
+      return;
+    }
+
     dispatch(markTaskDoneRequest(task));
     const httpClient = selectHttpClient(getState());
 
@@ -432,7 +478,17 @@ export function markTaskDone(task, notes = '', onSuccess, contactName = '') {
 }
 
 export function markTasksDone(tasks, notes = '', onSuccess, contactName = '') {
-  return function (dispatch, getState) {
+  return async function (dispatch, getState) {
+    const files = [
+      ...selectSignatures(getState()),
+      ...selectPictures(getState()),
+    ];
+    const oversized = await findOversizedFiles(files);
+    if (oversized.length > 0) {
+      Alert.alert(i18n.t('FAILED_TASK_COMPLETE'), i18n.t('FILE_TOO_LARGE'));
+      return;
+    }
+
     dispatch(markTasksDoneRequest());
     const httpClient = selectHttpClient(getState());
 

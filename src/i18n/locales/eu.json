@@ -302,6 +302,7 @@
         "CART_DELIVERY_TIME": "Banaketa {{- fromNow}}",
         "DELIVERY_ASAP": "Lehenbailehen",
         "AN_ERROR_OCCURRED": "Errore bat gertatu da",
+    "FILE_TOO_LARGE": "The file is too large to upload (max 5 MB). Please retake the photo.",
         "TASK_IMAGE_UPLOAD_CONFIRM_LONG": "Irudia ondo kargatu da",
         "TASK_IMAGE_UPLOAD_CONFIRM_SHORT": "Irudia kargatu da!",
         "LOAD_MORE": "Kargatu gehiago",

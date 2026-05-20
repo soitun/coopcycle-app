@@ -267,6 +267,7 @@
     "TASK_IMAGE_UPLOAD_CONFIRM_SHORT": "Obrázek načten!",
     "TASK_IMAGE_UPLOAD_CONFIRM_LONG": "Obrázek byl úspěšně nahrán",
     "AN_ERROR_OCCURRED": "Vyskytla se chyba",
+    "FILE_TOO_LARGE": "The file is too large to upload (max 5 MB). Please retake the photo.",
     "DELIVERY_ASAP": "Co nejdříve",
     "CART_DELIVERY_TIME": "Doručení {{- fromNow}}",
     "CART_DELIVERY_TIME_DIFF": "Doručení za {{diff}} minut",

@@ -269,6 +269,7 @@
     "TASK_IMAGE_UPLOAD_CONFIRM_SHORT": "Imachen cargada!",
     "TASK_IMAGE_UPLOAD_CONFIRM_LONG": "La imachen estió cargada con exito",
     "AN_ERROR_OCCURRED": "S'ha produciu una error",
+    "FILE_TOO_LARGE": "The file is too large to upload (max 5 MB). Please retake the photo.",
     "DELIVERY_ASAP": "Antes con antes",
     "CART_DELIVERY_TIME": "Entrega {{- fromNow}}",
     "CART_DELIVERY_TIME_DIFF": "Entrega en {{diff}} minutes",

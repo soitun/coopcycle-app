@@ -16,6 +16,7 @@ import { Camera, useCameraDevice, useCameraPermission, useLocationPermission } f
 
 import { addPicture } from '../../redux/Courier';
 import { navigateBackToCompleteTask } from '@/src/navigation/utils';
+import { compressImage } from '../../utils/imageCompression';
 
 function Photo({ navigation, route, addPicture }) {
   const { t } = useTranslation();
@@ -45,10 +46,11 @@ function Photo({ navigation, route, addPicture }) {
   const saveImage = async () => {
     const task = route.params?.task;
     if (image) {
+      const compressed = await compressImage(image);
       const destDir = `${LegacyFS.documentDirectory}pending_uploads/`;
       await LegacyFS.makeDirectoryAsync(destDir, { intermediates: true });
       const destUri = `${destDir}${uuid()}.jpg`;
-      await LegacyFS.copyAsync({ from: image, to: destUri });
+      await LegacyFS.copyAsync({ from: compressed, to: destUri });
       addPicture(task, destUri);
       navigateBackToCompleteTask(navigation, route);
     }
@@ -74,7 +76,8 @@ function Photo({ navigation, route, addPicture }) {
 
     if (!result.canceled) {
       const task = route.params?.task;
-      addPicture(task, result.assets[0].uri);
+      const compressed = await compressImage(result.assets[0].uri);
+      addPicture(task, compressed);
       navigateBackToCompleteTask(navigation, route);
     }
   };
