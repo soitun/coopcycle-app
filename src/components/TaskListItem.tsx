@@ -235,9 +235,11 @@ export default function TaskListItem({
   }, [task.status]);
 
   const taskUri: Uri = task['@id'];
-  const isSelectedTaskFromOrders = useSelector(makeIsSelectedTaskFromOrders(taskUri));
+  const selectIsFromOrders = useMemo(() => makeIsSelectedTaskFromOrders(taskUri), [taskUri]);
+  const selectIsFromTasks = useMemo(() => makeIsSelectedTaskFromTasks(taskUri), [taskUri]);
+  const isSelectedTaskFromOrders = useSelector(selectIsFromOrders);
   const shouldSwipeLeft = isSelectedTaskFromOrders;
-  const isSelectedTaskFromTasks = useSelector(makeIsSelectedTaskFromTasks(taskUri));
+  const isSelectedTaskFromTasks = useSelector(selectIsFromTasks);
   const shouldSwipeRight = isSelectedTaskFromTasks;
 
   const prevShouldSwipeLeftRef = useRef(false);

@@ -84,7 +84,10 @@ export default function GroupedTasks({
     tasksEntities,
   });
 
-  const unassignedTaskLists = createUnassignedTaskLists(unassignedTasks);
+  const unassignedTaskLists = useMemo(
+    () => createUnassignedTaskLists(unassignedTasks),
+    [unassignedTasks],
+  );
   // Combine unassigned tasks and task lists to use in SectionList
   const sections = useMemo(() => {
     if (isFetching) {
