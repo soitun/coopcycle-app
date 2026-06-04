@@ -177,7 +177,7 @@ export default function GroupedTasks({
         ...section.data.map((task, i) => ({ type: 'task' as const, task, section, index: i })),
       ];
     });
-  }, [sections, expandedSections]);
+  }, [sections, isExpandedSection]);
 
   const stickyHeaderIndices = useMemo(
     () =>
