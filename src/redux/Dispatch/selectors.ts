@@ -66,14 +66,6 @@ export const selectFilteredTaskLists = createSelector(
 
 export const selectSelectedTasks = state => state.dispatch.ui.selectedTasks;
 
-export const selectExpandedSections = state => state.dispatch.ui.expandedSections;
-export const selectIsExpandedSection = createSelector(
-  selectExpandedSections,
-  expandedSections => sectionTitle => {
-    return expandedSections[sectionTitle] === true;
-  }
-);
-
 export const selectAllTasksIdsFromOrders = createSelector(
   selectSelectedTasks,
   selectedTasks => {

@@ -6,32 +6,28 @@ import { useBackgroundHighlightColor } from '../../../styles/theme';
 import { darkGreyColor, whiteColor } from '../../../styles/common';
 import FAIcon from '@/src/components/Icon';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { selectIsExpandedSection } from '../../../redux/Dispatch/selectors';
-import { toggleSection } from '../../../redux/Dispatch/expandedSectionsSlice';
+interface SectionHeaderProps {
+  section: {
+    id: string;
+    title: string;
+    backgroundColor: string;
+    textColor: string;
+    isUnassignedTaskList: boolean;
+    ordersCount: number;
+    tasksCount: number;
+  };
+  isExpanded: boolean;
+  onToggle: () => void;
+}
 
-export function SectionHeader({
-  section,
-}) {
+export function SectionHeader({ section, isExpanded, onToggle }: SectionHeaderProps) {
   const { t } = useTranslation();
   const bgHighlightColor = useBackgroundHighlightColor();
-  const isExpandedSection = useSelector(selectIsExpandedSection);
-  const dispatch = useDispatch();
-
-  // Disabled animation for now..!
-  // if (Platform.OS === 'android') {
-  //   UIManager.setLayoutAnimationEnabledExperimental(true);
-  // }
-  const handleToggle = title => {
-    // Disabled animation for now..!
-    // LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    dispatch(toggleSection(title));
-  };
 
   return (
     <View style={{ backgroundColor: bgHighlightColor }}>
       <TouchableOpacity
-        onPress={() => handleToggle(section.title)}
+        onPress={onToggle}
         activeOpacity={0.5}
         style={{
           flexDirection: 'row',
@@ -68,11 +64,7 @@ export function SectionHeader({
         </View>
         {section.tasksCount === 0 ? null : (
           <FAIcon
-            name={
-              isExpandedSection(section.title)
-                ? 'chevron-up'
-                : 'chevron-down'
-            }
+            name={isExpanded ? 'chevron-up' : 'chevron-down'}
             testID={`${section.id}:toggler`}
             color={darkGreyColor}
           />
