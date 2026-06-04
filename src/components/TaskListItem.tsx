@@ -232,6 +232,13 @@ export default function TaskListItem({
 
   const taskUri: Uri = task['@id'];
 
+  // When FlashList recycles this cell for a different task, snap the swipeable
+  // back to closed without triggering onSwipeableClose callbacks.
+  useEffect(() => {
+    isOpenRef.current = false;
+    swipeableRef.current?.reset();
+  }, [taskUri]);
+
   // Expose swipeable controls to the parent for linked-task coordination.
   const methods = useMemo<TaskListItemMethods>(() => ({
     openLeft:  () => swipeableRef.current?.openLeft(),
