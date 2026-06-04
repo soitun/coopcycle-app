@@ -39,9 +39,22 @@ export const selectFilteredUnassignedTasksNotCancelled = createSelector(
   (tasks, filters) => filterTasks(tasks, filters),
 );
 
-export const selectFilteredTaskLists = createSelector(
+const selectTaskListsRelevantEntities = createSelector(
   selectTaskLists,
   selectTasksEntities,
+  (taskLists, taskEntities) => {
+    const relevantIds = new Set(taskLists.flatMap(tl => tl.tasksIds ?? []));
+    const result: Record<string, unknown> = {};
+    relevantIds.forEach(id => {
+      if (taskEntities[id]) result[id] = taskEntities[id];
+    });
+    return result;
+  },
+);
+
+export const selectFilteredTaskLists = createSelector(
+  selectTaskLists,
+  selectTaskListsRelevantEntities,
   selectAllDispatchFilters,
   (taskLists, taskEntities, filters) =>
     taskLists.map(taskList => {
@@ -52,14 +65,6 @@ export const selectFilteredTaskLists = createSelector(
 );
 
 export const selectSelectedTasks = state => state.dispatch.ui.selectedTasks;
-
-export const selectExpandedSections = state => state.dispatch.ui.expandedSections;
-export const selectIsExpandedSection = createSelector(
-  selectExpandedSections,
-  expandedSections => sectionTitle => {
-    return expandedSections[sectionTitle] === true;
-  }
-);
 
 export const selectAllTasksIdsFromOrders = createSelector(
   selectSelectedTasks,

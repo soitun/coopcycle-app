@@ -196,14 +196,14 @@ export default function useSetTaskListItems({ allTaskLists, tasksEntities }) {
       );
 
       if (isJustUnassign) {
-        dispatch(restoreCentrifugoUpdate());
+        setTimeout(() => dispatch(restoreCentrifugoUpdate()), 500);
         return unassignResolve;
       }
 
       const tasksToAssign = _.flatten(Object.values(taskListToEdit));
 
       const result = await _assignTasks(tasksToAssign, user);
-      dispatch(restoreCentrifugoUpdate());
+      setTimeout(() => dispatch(restoreCentrifugoUpdate()), 500);
 
       return result;
     },

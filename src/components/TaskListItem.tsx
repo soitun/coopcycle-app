@@ -1,4 +1,9 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+export type TaskListItemMethods = {
+  openLeft: () => void;
+  openRight: () => void;
+  close: () => void;
+};
 import { ArrowRightCircle, LucideIcon } from 'lucide-react-native';
 import {
   Dimensions,
@@ -8,16 +13,13 @@ import {
   TouchableOpacityProps,
   View,
 } from 'react-native';
-import { SwipeRow } from 'react-native-swipe-list-view';
-import { useSelector } from 'react-redux';
+import Swipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
+
 
 import { HStack } from '@/components/ui/hstack';
 import { Icon } from '@/components/ui/icon';
 import { Task, TaskListItemProps } from '../types/task';
-import {
-  makeIsSelectedTaskFromOrders,
-  makeIsSelectedTaskFromTasks,
-} from '../redux/Dispatch/selectors';
+
 import { redColor, yellowColor } from '../styles/common';
 import { ItemTouchable } from './ItemTouchable';
 import { OrderInfo } from './OrderInfo';
@@ -55,11 +57,6 @@ export const styles = StyleSheet.create({
   },
   iconDanger: {
     color: redColor,
-  },
-  rowBack: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
   sortButton: {
     marginLeft: 12,
@@ -178,6 +175,7 @@ export default function TaskListItem({
   onSwipedToLeft,
   onSwipedToRight,
   onSwipeClosed,
+  onRegisterRef,
 }) {
   const isPickup = task.type === 'PICKUP';
   const context = useTaskListsContext();
@@ -208,14 +206,11 @@ export default function TaskListItem({
   const textStyle = [styles.text];
 
   const itemProps = {opacity: 1};
-  const swipeButtonsProps = {display: 'flex'};
 
   if (task.status === 'DONE' || task.status === 'FAILED') {
     itemProps.opacity = 0.4;
-    swipeButtonsProps.display = 'none';
   }
 
-  // TODO check - are we using this?
   if (task.status === 'FAILED') {
     textStyle.push(styles.textDanger);
   }
@@ -226,48 +221,35 @@ export default function TaskListItem({
   const buttonWidth = cardWidth / 4;
   const visibleButtonWidth = buttonWidth + 25;
 
-  const swipeRow = useRef<SwipeRow<Task>>(null);
+  const swipeableRef = useRef<SwipeableMethods | null>(null);
+  const isOpenRef = useRef(false);
 
   useEffect(() => {
     if (task.status === 'DONE') {
-      swipeRow.current?.closeRow();
+      swipeableRef.current?.close();
     }
   }, [task.status]);
 
   const taskUri: Uri = task['@id'];
-  const isSelectedTaskFromOrders = useSelector(makeIsSelectedTaskFromOrders(taskUri));
-  const shouldSwipeLeft = isSelectedTaskFromOrders;
-  const isSelectedTaskFromTasks = useSelector(makeIsSelectedTaskFromTasks(taskUri));
-  const shouldSwipeRight = isSelectedTaskFromTasks;
 
-  const prevShouldSwipeLeftRef = useRef(false);
-  const prevShouldSwipeRightRef = useRef(false);
+  // When FlashList recycles this cell for a different task, snap the swipeable
+  // back to closed without triggering onSwipeableClose callbacks.
+  useEffect(() => {
+    isOpenRef.current = false;
+    swipeableRef.current?.reset();
+  }, [taskUri]);
+
+  // Expose swipeable controls to the parent for linked-task coordination.
+  const methods = useMemo<TaskListItemMethods>(() => ({
+    openLeft:  () => swipeableRef.current?.openLeft(),
+    openRight: () => swipeableRef.current?.openRight(),
+    close:     () => swipeableRef.current?.close(),
+  }), []);
 
   useEffect(() => {
-    if (shouldSwipeLeft && !prevShouldSwipeLeftRef.current) {
-      // don't swipe if already open
-      if (swipeRow.current?.isOpen) {
-        return;
-      }
-      swipeRow.current?.manuallySwipeRow?.(buttonWidth);
-    } else if (!shouldSwipeLeft && prevShouldSwipeLeftRef.current) {
-      swipeRow.current?.closeRow?.();
-    }
-    prevShouldSwipeLeftRef.current = shouldSwipeLeft;
-  }, [shouldSwipeLeft, buttonWidth]);
-
-  useEffect(() => {
-    if (shouldSwipeRight && !prevShouldSwipeRightRef.current) {
-      // don't swipe if already open
-      if (swipeRow.current?.isOpen) {
-        return;
-      }
-      swipeRow.current?.manuallySwipeRow?.(-buttonWidth);
-    } else if (!shouldSwipeRight && prevShouldSwipeRightRef.current) {
-      swipeRow.current?.closeRow?.();
-    }
-    prevShouldSwipeRightRef.current = shouldSwipeRight;
-  }, [shouldSwipeRight, buttonWidth]);
+    onRegisterRef?.(taskUri, methods);
+    return () => onRegisterRef?.(taskUri, null);
+  }, [taskUri, onRegisterRef, methods]);
 
   const onTaskPress = () => {
     if (context?.isEditMode && task.status === 'CANCELLED') return;
@@ -280,24 +262,36 @@ export default function TaskListItem({
     onPress();
   }
 
-  function _onRowOpen(toValue: number) {
-    if (toValue > 0 && onSwipedToLeft) {
-      onSwipedToLeft();
-    } else if (toValue < 0 && onSwipedToRight) {
-      onSwipedToRight();
-    }
-  }
+  const allowSwipeLeft = task.status !== 'DONE';
+  const allowSwipeRight = task.status !== 'DONE';
 
-  function _onRowClose() {
-    if (onSwipeClosed) {
-      onSwipeClosed();
-    }
-  }
+  const renderLeftActions = useCallback(() => (
+    <SwipeButtonContainer
+      backgroundColor={swipeOutLeftBackgroundColor}
+      left
+      onPress={() => {
+        swipeableRef.current?.close();
+        onPressLeft();
+      }}
+      testID={`${taskTestId}:left`}
+      width={visibleButtonWidth}>
+      <SwipeButton icon={swipeOutLeftIcon} width={buttonWidth} />
+    </SwipeButtonContainer>
+  ), [swipeOutLeftBackgroundColor, swipeOutLeftIcon, onPressLeft, buttonWidth, visibleButtonWidth, taskTestId]);
 
-  const allowSwipeLeft =
-    task.status !== 'DONE' && !isSelectedTaskFromOrders;
-  const allowSwipeRight =
-    task.status !== 'DONE' && !isSelectedTaskFromTasks;
+  const renderRightActions = useCallback(() => (
+    <SwipeButtonContainer
+      backgroundColor={swipeOutRightBackgroundColor}
+      right
+      onPress={() => {
+        swipeableRef.current?.close();
+        onPressRight();
+      }}
+      testID={`${taskTestId}:right`}
+      width={visibleButtonWidth}>
+      <SwipeButton icon={swipeOutRightIcon} width={buttonWidth} />
+    </SwipeButtonContainer>
+  ), [swipeOutRightBackgroundColor, swipeOutRightIcon, onPressRight, buttonWidth, visibleButtonWidth, taskTestId]);
 
   const renderPrevSortButton = () => {
     if (index === 0) {
@@ -325,47 +319,28 @@ export default function TaskListItem({
   return (
     <View>
       {renderPrevSortButton()}
-      {/* @ts-expect-error library's types don't include a children prop */}
-      <SwipeRow
-        disableLeftSwipe={!allowSwipeLeft}
-        disableRightSwipe={!allowSwipeRight}
-        leftOpenValue={buttonWidth}
-        stopLeftSwipe={visibleButtonWidth}
-        rightOpenValue={-buttonWidth}
-        stopRightSwipe={-visibleButtonWidth}
-        onRowOpen={_onRowOpen}
-        onRowClose={_onRowClose}
-        ref={swipeRow}
-        style={{
-          borderRadius: cardBorderRadius,
-          marginVertical: 1.5,
-          marginLeft: marginHorizontal,
-          marginRight: marginHorizontal,
+      <View style={{
+        borderRadius: cardBorderRadius,
+        marginVertical: 1.5,
+        marginLeft: marginHorizontal,
+        marginRight: marginHorizontal,
+        overflow: 'hidden',
+      }}>
+      <Swipeable
+        ref={swipeableRef}
+        friction={2}
+        renderLeftActions={allowSwipeLeft ? renderLeftActions : undefined}
+        renderRightActions={allowSwipeRight ? renderRightActions : undefined}
+        onSwipeableOpen={(direction) => {
+          isOpenRef.current = true;
+          if (direction === 'right' && onSwipedToLeft) onSwipedToLeft();
+          else if (direction === 'left' && onSwipedToRight) onSwipedToRight();
+        }}
+        onSwipeableClose={() => {
+          if (!isOpenRef.current) return; // guard against re-entrant close cascade
+          isOpenRef.current = false;
+          if (onSwipeClosed) onSwipeClosed();
         }}>
-        <View style={{ ...styles.rowBack, ...swipeButtonsProps }}>
-          <SwipeButtonContainer
-            backgroundColor={swipeOutLeftBackgroundColor}
-            left
-            onPress={() => {
-              swipeRow.current?.closeRowWithoutAnimation();
-              onPressLeft();
-            }}
-            testID={`${taskTestId}:left`}
-            width={visibleButtonWidth}>
-            <SwipeButton icon={swipeOutLeftIcon} width={buttonWidth} />
-          </SwipeButtonContainer>
-          <SwipeButtonContainer
-            backgroundColor={swipeOutRightBackgroundColor}
-            right
-            onPress={() => {
-              swipeRow.current?.closeRowWithoutAnimation();
-              onPressRight();
-            }}
-            testID={`${taskTestId}:right`}
-            width={visibleButtonWidth}>
-            <SwipeButton icon={swipeOutRightIcon} width={buttonWidth} />
-          </SwipeButtonContainer>
-        </View>
         <View style={{ position: 'relative', flex: 1, overflow: 'visible' }}>
           {task.status === 'CANCELLED' && <CancelledBackground taskTestId={taskTestId} />}
           <HStack
@@ -417,7 +392,8 @@ export default function TaskListItem({
             />
           )}
         </View>
-      </SwipeRow>
+      </Swipeable>
+      </View>
       {renderSortButton()}
     </View>
   );

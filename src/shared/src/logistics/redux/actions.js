@@ -112,6 +112,16 @@ export function updateTask(action, task) {
       return;
     }
 
+    if (
+      prevState.logistics.ui.disabledCentrifugoUpdatesForUsers.length > 0 &&
+      task.assignedTo &&
+      prevState.logistics.ui.disabledCentrifugoUpdatesForUsers.includes(
+        task.assignedTo,
+      )
+    ) {
+      return;
+    }
+
     if (isSameDayTask(task, date)) {
       switch (action) {
         case 'task:created':

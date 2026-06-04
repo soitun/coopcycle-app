@@ -1,9 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import { ActivityIndicator, View } from 'react-native';
-import { memo, useCallback, useEffect, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { SwipeListView } from 'react-native-swipe-list-view';
+import { FlashList } from '@shopify/flash-list';
 
 import {
   addOrder,
@@ -32,13 +32,11 @@ import {
   selectTaskLists,
   selectTasksEntities,
 } from '../../../shared/logistics/redux';
-import { selectIsExpandedSection } from '../../../redux/Dispatch/selectors';
 import { withLinkedTasks } from '../../../shared/src/logistics/redux/taskUtils';
 import BulkEditTasksFloatingButton from './BulkEditTasksFloatingButton';
-import TaskListItemBase from '../../../components/TaskListItem';
+import TaskListItemBase, { TaskListItemMethods } from '../../../components/TaskListItem';
 
 const TaskListItem = memo(TaskListItemBase);
-//import ItemSeparatorComponent from '../../../components/ItemSeparator';
 import useSetTaskListItems from '../../../shared/src/logistics/redux/hooks/useSetTaskListItems';
 import { getOrderNumber } from '../../../utils/tasks';
 import { useRecurrenceRulesGenerateOrdersMutation, useSetTaskListItemsMutation } from '../../../redux/api/slice';
@@ -47,6 +45,28 @@ import { useTaskLongPress } from '../hooks/useTaskLongPress';
 import { useTaskListsContext } from '../../courier/contexts/TaskListsContext';
 import Task from '@/src/types/task';
 import { moveAfter } from '../../task/components/utils';
+
+type SectionData = {
+  id: string;
+  title: string;
+  data: Task[];
+  taskList: ReturnType<typeof createTempTaskList>;
+  taskListId: string;
+  isUnassignedTaskList: boolean;
+  ordersCount: number;
+  tasksCount: number;
+  backgroundColor: string;
+  textColor: string;
+  appendTaskListTestID?: string;
+  type: 'section';
+};
+
+type FlatItem =
+  | { type: 'header'; section: SectionData }
+  | { type: 'task'; task: Task; section: SectionData; index: number };
+
+const HEADER_HEIGHT = 52;
+const TASK_HEIGHT = 88;
 
 export default function GroupedTasks({
   isFetching,
@@ -63,7 +83,6 @@ export default function GroupedTasks({
   const allTaskLists = useSelector(selectTaskLists);
   const date = useSelector(selectSelectedDate);
   const context = useTaskListsContext();
-  const isExpandedSection = useSelector(selectIsExpandedSection);
   const [generateOrders] = useRecurrenceRulesGenerateOrdersMutation();
 
   useEffect(() => {
@@ -84,20 +103,42 @@ export default function GroupedTasks({
     tasksEntities,
   });
 
-  const unassignedTaskLists = createUnassignedTaskLists(unassignedTasks);
-  // Combine unassigned tasks and task lists to use in SectionList
-  const sections = useMemo(() => {
-    if (isFetching) {
-      return [];
-    }
+  // Direct ref map for linked-task swipe coordination
+  const taskItemRefsMap = useRef<Map<string, TaskListItemMethods>>(new Map());
+  const registerTaskRef = useCallback((taskUri: string, ref: TaskListItemMethods | null) => {
+    if (ref) taskItemRefsMap.current.set(taskUri, ref);
+    else taskItemRefsMap.current.delete(taskUri);
+  }, []);
+  // Tracks task URIs that are being opened programmatically to break the
+  // openRight() → onSwipeableOpen → handleOnSwipeToRight → openRight() loop.
+  const programmaticSwipeInProgress = useRef<Set<string>>(new Set());
+
+  // Section expansion — local UI state, default all expanded
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+  const isExpandedSection = useCallback(
+    (title: string) => expandedSections[title] !== false,
+    [expandedSections],
+  );
+  const toggleSection = useCallback((title: string) => {
+    setExpandedSections(prev => ({ ...prev, [title]: prev[title] === false ? true : false }));
+  }, []);
+
+  const unassignedTaskLists = useMemo(
+    () => createUnassignedTaskLists(unassignedTasks),
+    [unassignedTasks],
+  );
+
+  // Section metadata (always includes full task data; expansion controlled separately)
+  const sections = useMemo<SectionData[]>(() => {
+    if (isFetching) return [];
 
     const unassignedTaskList = createTempTaskList(UNASSIGNED_TASKS_LIST_ID, unassignedTasks);
 
-    const sectionsList = [
+    const sectionsList: SectionData[] = [
       {
         id: UNASSIGNED_TASKS_LIST_ID,
         title: t('DISPATCH_UNASSIGNED_TASKS'),
-        data: isExpandedSection(t('DISPATCH_UNASSIGNED_TASKS')) ? unassignedTasks : [],
+        data: unassignedTasks,
         taskList: unassignedTaskList,
         taskListId: UNASSIGNED_TASKS_LIST_ID,
         isUnassignedTaskList: true,
@@ -105,12 +146,12 @@ export default function GroupedTasks({
         tasksCount: unassignedTasks.length,
         backgroundColor: whiteColor,
         textColor: darkGreyColor,
-        type: 'section'
+        type: 'section',
       },
       ...taskLists.map(taskList => ({
         id: `${taskList.username.toLowerCase()}TasksList`,
         title: taskList.username,
-        data: isExpandedSection(taskList.username) ? getTaskListTasks(taskList, tasksEntities) : [],
+        data: getTaskListTasks(taskList, tasksEntities),
         taskList,
         taskListId: taskList['@id'],
         isUnassignedTaskList: false,
@@ -119,12 +160,33 @@ export default function GroupedTasks({
         backgroundColor: taskList.color ? taskList.color : darkGreyColor,
         textColor: whiteColor,
         appendTaskListTestID: taskList.appendTaskListTestID,
-        type: 'section'
+        type: 'section' as const,
       })),
     ];
 
     return sectionsList.filter(section => !hideEmptyTaskLists || section.tasksCount > 0);
-  }, [t, tasksEntities, taskLists, unassignedTaskLists.length, unassignedTasks, hideEmptyTaskLists, isFetching, isExpandedSection]);
+  }, [t, tasksEntities, taskLists, unassignedTaskLists.length, unassignedTasks, hideEmptyTaskLists, isFetching]);
+
+  // Flat data for FlashList
+  const flatData = useMemo<FlatItem[]>(() => {
+    return sections.flatMap(section => {
+      const header: FlatItem = { type: 'header', section };
+      if (!isExpandedSection(section.title)) return [header];
+      return [
+        header,
+        ...section.data.map((task, i) => ({ type: 'task' as const, task, section, index: i })),
+      ];
+    });
+  }, [sections, isExpandedSection]);
+
+  const stickyHeaderIndices = useMemo(
+    () =>
+      flatData.reduce<number[]>((acc, item, i) => {
+        if (item.type === 'header') acc.push(i);
+        return acc;
+      }, []),
+    [flatData],
+  );
 
   const onOrderClick = useCallback(
     task => {
@@ -135,8 +197,6 @@ export default function GroupedTasks({
 
   const onTaskClick = useCallback(
     isUnassignedTaskList => task => {
-      // If task is unassigned, related tasks are order's tasks
-      // If task is assigned, related tasks are task's task list's tasks
       if (isUnassignedTaskList) {
         const allTasks = Object.values(tasksEntities);
         const allRelatedTasks = withLinkedTasks(task, allTasks);
@@ -149,6 +209,14 @@ export default function GroupedTasks({
       }
     },
     [allTaskLists, navigation, route, tasksEntities],
+  );
+
+  const onSelectNewAssignation = useCallback(
+    callback => {
+      navigation.navigate('DispatchAllTasks');
+      callback();
+    },
+    [navigation],
   );
 
   const assignTaskWithRelatedTasksHandler = useCallback(
@@ -203,24 +271,21 @@ export default function GroupedTasks({
     ],
   );
 
-  const onSelectNewAssignation = useCallback(
-    callback => {
-      navigation.navigate('DispatchAllTasks');
-      callback();
-    },
-    [navigation],
-  );
-
   const handleOnSwipeToLeft = useCallback(
     (taskListId, task) => {
+      if (programmaticSwipeInProgress.current.has(task['@id'])) {
+        programmaticSwipeInProgress.current.delete(task['@id']);
+        return;
+      }
       const allTasks = Object.values(tasksEntities);
-      const tasksByTaskList = getLinkedTasks(
-        task,
-        taskListId,
-        allTasks,
-        allTaskLists,
-      );
-
+      const tasksByTaskList = getLinkedTasks(task, taskListId, allTasks, allTaskLists);
+      // Open linked tasks BEFORE dispatching (so renderLeftActions is still mounted)
+      Object.values(tasksByTaskList).flat().forEach(t => {
+        if (t['@id'] !== task['@id']) {
+          programmaticSwipeInProgress.current.add(t['@id']);
+          taskItemRefsMap.current.get(t['@id'])?.openLeft();
+        }
+      });
       dispatch(addOrder(tasksByTaskList));
     },
     [allTaskLists, dispatch, tasksEntities],
@@ -228,23 +293,39 @@ export default function GroupedTasks({
 
   const handleOnSwipeToRight = useCallback(
     (taskListId, task) => {
-      dispatch(addTask({ task, taskListId }));
+      if (programmaticSwipeInProgress.current.has(task['@id'])) {
+        programmaticSwipeInProgress.current.delete(task['@id']);
+        return;
+      }
+      const allTasks = Object.values(tasksEntities);
+      const tasksByTaskList = getLinkedTasks(task, taskListId, allTasks, allTaskLists);
+      // Open linked tasks BEFORE dispatching (so renderRightActions is still mounted)
+      Object.entries(tasksByTaskList).forEach(([tListId, linkedTasks]) => {
+        linkedTasks.forEach(t => {
+          if (t['@id'] !== task['@id']) {
+            programmaticSwipeInProgress.current.add(t['@id']);
+            taskItemRefsMap.current.get(t['@id'])?.openRight();
+          }
+        });
+      });
+      Object.entries(tasksByTaskList).forEach(([tListId, linkedTasks]) => {
+        linkedTasks.forEach(t => dispatch(addTask({ task: t, taskListId: tListId })));
+      });
     },
-    [dispatch],
+    [allTaskLists, dispatch, tasksEntities],
   );
 
   const handleOnSwipeClose = useCallback(
     (section, task) => {
       const taskListId = section.taskListId;
       const allTasks = Object.values(tasksEntities);
-      const tasksByTaskList = getLinkedTasks(
-        task,
-        taskListId,
-        allTasks,
-        allTaskLists,
-      );
-
+      const tasksByTaskList = getLinkedTasks(task, taskListId, allTasks, allTaskLists);
       dispatch(removeTasksAndOrders(tasksByTaskList));
+      Object.values(tasksByTaskList).flat().forEach(t => {
+        if (t['@id'] !== task['@id']) {
+          taskItemRefsMap.current.get(t['@id'])?.close();
+        }
+      });
     },
     [allTaskLists, dispatch, tasksEntities],
   );
@@ -324,16 +405,21 @@ export default function GroupedTasks({
     [assignTaskHandler, handleOnSwipeToRight, handleOnSwipeClose],
   );
 
-  const renderSectionHeader = useCallback(
-    ({ section }) => (
-      <SectionHeader section={section}/>
-    ), []
-  );
-
   const longPressHandler = useTaskLongPress();
 
   const renderItem = useCallback(
-    ({ section, item: task, index }) => {
+    ({ item }: { item: FlatItem }) => {
+      if (item.type === 'header') {
+        return (
+          <SectionHeader
+            section={item.section}
+            isExpanded={isExpandedSection(item.section.title)}
+            onToggle={() => toggleSection(item.section.title)}
+          />
+        );
+      }
+
+      const { task, section, index } = item;
       const tasks = section.data;
       const nextTask = index < tasks.length - 1 ? tasks[index + 1] : null;
 
@@ -350,12 +436,15 @@ export default function GroupedTasks({
           onSortBefore={() => handleSortBefore(tasks)}
           onSort={() => handleSort(tasks, index)}
           onOrderPress={() => onOrderClick(task)}
+          onRegisterRef={registerTaskRef}
           {...(swipeLeftConfiguration(section, task))}
           {...(swipeRightConfiguration(section, task))}
         />
       );
     },
     [
+      isExpandedSection,
+      toggleSection,
       longPressHandler,
       onTaskClick,
       onOrderClick,
@@ -363,6 +452,7 @@ export default function GroupedTasks({
       handleSortBefore,
       swipeLeftConfiguration,
       swipeRightConfiguration,
+      registerTaskRef,
     ],
   );
 
@@ -384,21 +474,20 @@ export default function GroupedTasks({
           <ActivityIndicator animating={true} size="large" />
         </View>
       )}
-      <SwipeListView
-        useSectionList={true}
-        sections={sections}
-        stickySectionHeadersEnabled={true}
-        keyExtractor={(item, index) => `${item['@id']}-${index}`}
-        renderSectionHeader={renderSectionHeader}
+      <FlashList
+        data={flatData}
+        getItemType={item => item.type}
         renderItem={renderItem}
-        // ItemSeparatorComponent={ItemSeparatorComponent}
+        keyExtractor={(item, index) =>
+          item.type === 'header'
+            ? `header-${item.section.id}`
+            : `${item.task['@id']}-${index}`
+        }
+        stickyHeaderIndices={stickyHeaderIndices}
+        estimatedItemSize={TASK_HEIGHT}
         refreshing={!!isFetching}
         onRefresh={() => refetch && refetch()}
         testID="dispatchTaskLists"
-        // Change the ones below to adjust performance / memory consumption
-        initialNumToRender={20}
-        maxToRenderPerBatch={10}
-        windowSize={11}
       />
       <BulkEditTasksFloatingButton onPress={handleBulkAssignButtonPress} />
     </>
