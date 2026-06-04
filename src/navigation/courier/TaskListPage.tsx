@@ -49,17 +49,20 @@ export default function TaskListPage({ navigation, route }) {
     return taskList;
   }, [tasks]);
 
+  const isEditMode = context?.isEditMode;
+  const clearSelectedTasks = context?.clearSelectedTasks;
+
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      if (context?.isEditMode) {
-        context?.clearSelectedTasks();
+      if (isEditMode) {
+        clearSelectedTasks?.();
         return true;
       }
       return false;
     });
 
     return () => backHandler.remove();
-  }, [context]);
+  }, [isEditMode, clearSelectedTasks]);
 
   const containerStyle = [styles.container];
   if (tasks.length === 0) {

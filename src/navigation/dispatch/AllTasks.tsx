@@ -31,7 +31,7 @@ export default function AllTasks({ navigation, route }) {
 
   const dispatch = useDispatch();
 
-  const { isFetching, isError, refetch } = useAllTasks(selectedDate);
+  const { isLoading, isFetching, isError, refetch } = useAllTasks(selectedDate);
   const bgHighlightColor = useBackgroundHighlightColor();
 
   const handleRefetch = () => {
@@ -54,9 +54,10 @@ export default function AllTasks({ navigation, route }) {
   }, [isEditMode, clearSelectedTasksFromContext, dispatch]);
 
   useEffect(() => {
-    InteractionManager.runAfterInteractions(() => {
+    const handle = InteractionManager.runAfterInteractions(() => {
       dispatch(initialize());
     });
+    return () => handle.cancel();
   }, [dispatch]);
 
   if (isError) {
@@ -68,7 +69,7 @@ export default function AllTasks({ navigation, route }) {
     );
   }
 
-  if (isFetching) {
+  if (isLoading) {
     return (
       <Center flex={1}>
         <ActivityIndicator animating={true} size="large" />
