@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, NativeModules } from 'react-native';
+import { Alert, AppState, NativeModules } from 'react-native';
 import { Center } from '@/components/ui/center';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -134,6 +134,26 @@ export default function DashboardPage({ navigation, route }) {
       // setTimeout(() => _checkSystemVolume(), 1500)
     }
   }, [isLoading, wasAlertShown, _checkSystemVolume]);
+
+  useEffect(() => {
+    const msUntilMidnight = moment().add(1, 'day').startOf('day').diff(moment());
+    const timer = setTimeout(() => {
+      dispatch(changeDate(moment().toISOString()));
+    }, msUntilMidnight);
+    return () => clearTimeout(timer);
+  }, [dispatch]);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (nextAppState === 'active') {
+        const today = moment().format('YYYY-MM-DD');
+        if (date.format('YYYY-MM-DD') !== today) {
+          dispatch(changeDate(moment().toISOString()));
+        }
+      }
+    });
+    return () => subscription.remove();
+  }, [date, dispatch]);
 
   if (!isInternetReachable) {
     return (
