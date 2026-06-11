@@ -7049,21 +7049,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tabler/icons-react-native@npm:^3.34.1":
-  version: 3.34.1
-  resolution: "@tabler/icons-react-native@npm:3.34.1"
+"@tabler/icons-react-native@npm:^3.44.0":
+  version: 3.44.0
+  resolution: "@tabler/icons-react-native@npm:3.44.0"
   dependencies:
-    "@tabler/icons": "npm:3.34.1"
+    "@tabler/icons": "npm:3.44.0"
   peerDependencies:
     react: ">= 16.5.1"
-  checksum: 10c0/4a4732486686fefdd1e72b2cd7429e9c20ebd7e52c1ba87c6dda716ab6ea10f72d656a3134d97b9be1a7178276b5b2e596b095dfdd5029bd00a0030bf025c167
+    react-native-svg: ">= 13.0.0"
+  checksum: 10c0/2b1ad3a8aed8ea69e19f77acca6b34a67162786803c0cb2b71406d4604659ded16736cdc8cfa53edab0576e0ee3f028e2fc5dbcb70486057ea83225538f72593
   languageName: node
   linkType: hard
 
-"@tabler/icons@npm:3.34.1":
-  version: 3.34.1
-  resolution: "@tabler/icons@npm:3.34.1"
-  checksum: 10c0/e5568f1f8a2446f71e6b027a7f844f263086a73c033b6e8bb1011e6662aa23eb6420f693b7a220fc4f7376867b5f1b2190ac2597c0dd3b9adcf1166875e12439
+"@tabler/icons@npm:3.44.0":
+  version: 3.44.0
+  resolution: "@tabler/icons@npm:3.44.0"
+  checksum: 10c0/0d5c1f9d6e68aa04c4a661e96035190e0884e0bc0022d31922efad3cfba210a25b2f013c0b6c0ab6aeb3d5a402a9b85a168966bd11a30ba6087f614f8521ccf3
   languageName: node
   linkType: hard
 
@@ -8524,7 +8525,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/chroma-js@npm:^3":
+"@types/chroma-js@npm:^3.1.2":
   version: 3.1.2
   resolution: "@types/chroma-js@npm:3.1.2"
   checksum: 10c0/d2a7d9612c5abe3733a113d339eb8158cb36aeeeb571a3c371e81e8f3a682cd70f1649cea521716fbb5d79eb96f585a539b304be44e3fa818bd56b2a05f29f73
@@ -9258,10 +9259,10 @@ __metadata:
     "@sentry/react-native": "npm:~7.2.0"
     "@shopify/flash-list": "npm:^2.3.1"
     "@stripe/stripe-react-native": "npm:^0.56.0"
-    "@tabler/icons-react-native": "npm:^3.34.1"
+    "@tabler/icons-react-native": "npm:^3.44.0"
     "@testing-library/react-native": "npm:^12.5.1"
     "@turf/turf": "npm:^6.5.0"
-    "@types/chroma-js": "npm:^3"
+    "@types/chroma-js": "npm:^3.1.2"
     "@types/jest": "npm:^29.5.13"
     "@types/lodash": "npm:^4.17.20"
     "@types/object-hash": "npm:^3"
@@ -9273,7 +9274,7 @@ __metadata:
     ajv-cli: "npm:^5.0.0"
     async-mutex: "npm:^0.5.0"
     axios: "npm:^1.12.2"
-    axios-mock-adapter: "npm:^1.21.4"
+    axios-mock-adapter: "npm:^1.22.0"
     babel-eslint: "npm:^10.1.0"
     babel-plugin-module-resolver: "npm:^5.0.0"
     babel-plugin-transform-remove-console: "npm:^6.9.4"
@@ -9296,7 +9297,7 @@ __metadata:
     expo-image-manipulator: "npm:~14.0.8"
     expo-image-picker: "npm:17.0.9"
     expo-notifications: "npm:0.32.14"
-    formik: "npm:^2.4.6"
+    formik: "npm:^2.4.9"
     fuse.js: "npm:^6.6.2"
     google-libphonenumber: "npm:^3.2.43"
     i18next: "npm:^22"
@@ -9305,7 +9306,7 @@ __metadata:
     jest-expo: "npm:^54.0.13"
     jwt-decode: "npm:^3.1.2"
     libphonenumber-js: "npm:^1.12.17"
-    lodash: "npm:^4.17.21"
+    lodash: "npm:^4.18.1"
     lucide-react-native: "npm:^0.544.0"
     mock-async-storage: "npm:^2.2.0"
     moment: "npm:^2.30.1"
@@ -9315,13 +9316,13 @@ __metadata:
     numbro: "npm:^2.5.0"
     object-hash: "npm:^3.0.0"
     prettier: "npm:^3.5.3"
-    promise.allsettled: "npm:^1.0.6"
+    promise.allsettled: "npm:^1.0.7"
     prop-types: "npm:^15.8.1"
-    qs: "npm:^6.13.0"
+    qs: "npm:^6.15.2"
     react: "npm:19.1.0"
     react-aria: "npm:^3.43.2"
     react-dom: "npm:19.1.0"
-    react-i18next: "npm:^12"
+    react-i18next: "npm:^12.3.1"
     react-native: "npm:0.81.5"
     react-native-app-auth: "npm:^8.0.3"
     react-native-autocomplete-input: "npm:^5.4.0"
@@ -9371,7 +9372,7 @@ __metadata:
     react-native-worklets: "npm:^0.6.1"
     react-navigation-header-buttons: "npm:^13"
     react-query: "npm:^3.39.3"
-    react-redux: "npm:^8.1.0"
+    react-redux: "npm:^8.1.3"
     react-stately: "npm:^3.39.0"
     react-test-renderer: "npm:19.1.0"
     reactotron-react-native: "npm:^5.1.17"
@@ -9382,7 +9383,7 @@ __metadata:
     redux-async-queue: "npm:^1.0.0"
     redux-logger: "npm:^3.0.6"
     redux-persist: "npm:^6.0.0"
-    slugify: "npm:^1.6.6"
+    slugify: "npm:^1.6.9"
     tailwind-variants: "npm:^0.1.20"
     tailwindcss: "npm:^3.4.17"
     typescript: "npm:^5.8.3"
@@ -9907,7 +9908,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios-mock-adapter@npm:^1.21.4":
+"axios-mock-adapter@npm:^1.22.0":
   version: 1.22.0
   resolution: "axios-mock-adapter@npm:1.22.0"
   dependencies:
@@ -13361,9 +13362,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"formik@npm:^2.4.6":
-  version: 2.4.6
-  resolution: "formik@npm:2.4.6"
+"formik@npm:^2.4.9":
+  version: 2.4.9
+  resolution: "formik@npm:2.4.9"
   dependencies:
     "@types/hoist-non-react-statics": "npm:^3.3.1"
     deepmerge: "npm:^2.1.1"
@@ -13375,7 +13376,7 @@ __metadata:
     tslib: "npm:^2.0.0"
   peerDependencies:
     react: ">=16.8.0"
-  checksum: 10c0/e2853fc7833649386ff183eac9cb6a69a999c4b05aabe5636152e1cec1eb35ac0d9f511425624f0d7a88c6e19d4fd2aa259399a6683f0475c30170a5a3ea4f79
+  checksum: 10c0/2b76154b624f4464871f56204a7a87fec9f0cc24d742ad4e20628bd680a81ef2ae9966f54b616003f623dc1f7c7b25a25aafa8a59bcc1d940b7526fb665dbd0b
   languageName: node
   linkType: hard
 
@@ -16036,6 +16037,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash@npm:^4.18.1":
+  version: 4.18.1
+  resolution: "lodash@npm:4.18.1"
+  checksum: 10c0/757228fc68805c59789e82185135cf85f05d0b2d3d54631d680ca79ec21944ec8314d4533639a14b8bcfbd97a517e78960933041a5af17ecb693ec6eecb99a27
+  languageName: node
+  linkType: hard
+
 "log-symbols@npm:^2.2.0":
   version: 2.2.0
   resolution: "log-symbols@npm:2.2.0"
@@ -18218,7 +18226,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"promise.allsettled@npm:^1.0.6":
+"promise.allsettled@npm:^1.0.7":
   version: 1.0.7
   resolution: "promise.allsettled@npm:1.0.7"
   dependencies:
@@ -18391,12 +18399,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:^6.13.0":
-  version: 6.14.0
-  resolution: "qs@npm:6.14.0"
+"qs@npm:^6.15.2":
+  version: 6.15.2
+  resolution: "qs@npm:6.15.2"
   dependencies:
     side-channel: "npm:^1.1.0"
-  checksum: 10c0/8ea5d91bf34f440598ee389d4a7d95820e3b837d3fd9f433871f7924801becaa0cd3b3b4628d49a7784d06a8aea9bc4554d2b6d8d584e2d221dc06238a42909c
+  checksum: 10c0/e6fd5f6f0aab06d480fe9ab15cebfc4ce4235303e2f91dc69a8f7f4df1e668a61c11d1cfbabacf4295cbbeb7b670ed23db45307480726259761f98e5695e93a7
   languageName: node
   linkType: hard
 
@@ -18650,7 +18658,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-i18next@npm:^12":
+"react-i18next@npm:^12.3.1":
   version: 12.3.1
   resolution: "react-i18next@npm:12.3.1"
   dependencies:
@@ -19420,7 +19428,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-redux@npm:^8.1.0":
+"react-redux@npm:^8.1.3":
   version: 8.1.3
   resolution: "react-redux@npm:8.1.3"
   dependencies:
@@ -20559,6 +20567,13 @@ __metadata:
   version: 1.6.6
   resolution: "slugify@npm:1.6.6"
   checksum: 10c0/e7e63f08f389a371d6228bc19d64ec84360bf0a538333446cc49dbbf3971751a6d180d2f31551188dd007a65ca771e69f574e0283290a7825a818e90b75ef44d
+  languageName: node
+  linkType: hard
+
+"slugify@npm:^1.6.9":
+  version: 1.6.9
+  resolution: "slugify@npm:1.6.9"
+  checksum: 10c0/8473c566ae00c5db26bfbf6182a4a9478ab3c912a9c926e1fdb410736a77228bfca4fdc5c755b46fafa7d2d9900de482fd7a9bd5e5c91128c4743c2c072d88da
   languageName: node
   linkType: hard
 
