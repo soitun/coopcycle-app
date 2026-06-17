@@ -2,14 +2,14 @@ import { Divider } from '@/components/ui/divider';
 import { HStack } from '@/components/ui/hstack';
 import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { FlatList, Image, TouchableOpacity, View } from 'react-native';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AddressAutocomplete from '../../components/AddressAutocomplete';
 import ItemSeparator from '../../components/ItemSeparator';
-import i18n from '../../i18n';
-import { loadAddresses, newAddress } from '../../redux/Account/actions';
+import { loadAddresses } from '../../redux/Account/actions';
 import {
   searchRestaurantsForAddress,
   setAddress,
@@ -18,12 +18,8 @@ import { selectAddresses } from '../../redux/Checkout/selectors';
 import { greyColor } from '../../styles/common';
 import Address from '../../utils/Address';
 
-interface AccountAddressesPageProps {
-  onSelect?(...args: unknown[]): unknown;
-  addresses: object[];
-}
-
 function EmptyAddressList() {
+  const { t } = useTranslation();
   return (
     <View style={{ alignItems: 'center', padding: 10 }}>
       <Image
@@ -37,45 +33,73 @@ function EmptyAddressList() {
         resizeMode={'contain'}
       />
       <Heading>Hey oh !</Heading>
-      <Text>{i18n.t('EMPTY_HERE')}</Text>
+      <Text>{t('EMPTY_HERE')}</Text>
     </View>
   );
 }
 
-function AccountAddressesPage(props: AccountAddressesPageProps) {
+function AddressRow({ item, selectedAddress }) {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const dispatch = useDispatch();
+
+  const color = selectedAddress
+    ? Address.geoDiff(selectedAddress, item)
+      ? greyColor
+      : 'transparent'
+    : 'transparent';
+
+  function handlePress() {
+    if (route.params?.action) {
+      const addressPrecise = { ...item, isPrecise: true };
+      switch (route.params.action) {
+        case 'search':
+          dispatch(searchRestaurantsForAddress(addressPrecise));
+          break;
+        case 'cart':
+          dispatch(setAddress(addressPrecise, route.params.cart));
+          break;
+        default:
+          dispatch(setAddress(addressPrecise));
+      }
+      navigation.goBack();
+    } else {
+      navigation.navigate('AddressDetails', { address: item });
+    }
+  }
+
+  return (
+    <TouchableOpacity onPress={handlePress}>
+      <HStack
+        style={{ backgroundColor: color }}
+        className="px-2 py-3 justify-between">
+        <Text>{item.streetAddress}</Text>
+        <Text>{item.name}</Text>
+      </HStack>
+    </TouchableOpacity>
+  );
+}
+
+export default function AccountAddressesPage() {
+  const { t } = useTranslation();
+  const navigation = useNavigation();
+  const route = useRoute();
+  const dispatch = useDispatch();
+
   const [refreshing, setRefreshing] = useState(false);
   const [focused, setFocused] = useState(false);
 
-  const { addresses } = props;
+  const addresses = useSelector(selectAddresses);
+  const address = useSelector(state => {
+    switch (route.params?.action) {
+      case 'cart':
+        return route.params?.cart.shippingAddress || {};
+      default:
+        return state.checkout.address;
+    }
+  });
 
   const textInputContainerHeight = 54;
-
-  function renderRow({ item }) {
-    const color = props.address
-      ? Address.geoDiff(props.address, item)
-        ? greyColor
-        : 'transparent'
-      : 'transparent';
-
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          if (props.route.params?.action) {
-            props.setAddress(item);
-            props.navigation.goBack();
-          } else {
-            props.navigation.navigate('AddressDetails', { address: item });
-          }
-        }}>
-        <HStack
-          style={{ backgroundColor: color }}
-          className="px-2 py-3 justify-between">
-          <Text>{item.streetAddress}</Text>
-          <Text>{item.name}</Text>
-        </HStack>
-      </TouchableOpacity>
-    );
-  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -91,10 +115,10 @@ function AccountAddressesPage(props: AccountAddressesPageProps) {
           style={{
             height: textInputContainerHeight * 0.7,
           }}
-          placeholder={i18n.t('ENTER_NEW_ADDRESS')}
+          placeholder={t('ENTER_NEW_ADDRESS')}
           onChangeText={text => setFocused(text.length >= 3)}
-          onSelectAddress={address => {
-            props.navigation.navigate('AddressDetails', { address });
+          onSelectAddress={addr => {
+            navigation.navigate('AddressDetails', { address: addr });
           }}
           onBlur={() => setFocused(false)}
         />
@@ -102,62 +126,24 @@ function AccountAddressesPage(props: AccountAddressesPageProps) {
       {!focused && (
         <View style={{ flex: 4 }}>
           <Divider />
-          <Heading className="my-3 px-2">{i18n.t('MY_ADDRESSES')}</Heading>
+          <Heading className="my-3 px-2">{t('MY_ADDRESSES')}</Heading>
           <FlatList
             keyExtractor={(item, index) => `address-${index}`}
             data={addresses}
             refreshing={refreshing}
             onRefresh={async () => {
               setRefreshing(true);
-              await props.loadAddresses();
+              await dispatch(loadAddresses());
               setRefreshing(false);
             }}
             ItemSeparatorComponent={ItemSeparator}
             ListEmptyComponent={EmptyAddressList}
-            renderItem={renderRow}
+            renderItem={({ item }) => (
+              <AddressRow item={item} selectedAddress={address} />
+            )}
           />
         </View>
       )}
     </View>
   );
 }
-
-function mapStateToProps(state, ownProps) {
-  const fnSelect = () => {
-    switch (ownProps.route.params?.action) {
-      case 'cart':
-        return ownProps.route.params?.cart.shippingAddress || {};
-      default:
-        return state.checkout.address;
-    }
-  };
-
-  return {
-    addresses: selectAddresses(state),
-    address: fnSelect(),
-  };
-}
-
-function mapDispatchToProps(dispatch, ownProps) {
-  const fnSelect = address => {
-    const addressPrecise = { ...address, isPrecise: true };
-    switch (ownProps.route.params?.action) {
-      case 'search':
-        return dispatch(searchRestaurantsForAddress(addressPrecise));
-      case 'cart':
-        return dispatch(setAddress(addressPrecise, ownProps.route.params.cart));
-      default:
-        dispatch(setAddress(addressPrecise));
-    }
-  };
-  return {
-    loadAddresses: () => dispatch(loadAddresses()),
-    newAddress: address => dispatch(newAddress(address)),
-    setAddress: address => fnSelect(address),
-  };
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(withTranslation()(AccountAddressesPage));
