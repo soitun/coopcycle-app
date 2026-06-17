@@ -40,19 +40,6 @@ export const styles = StyleSheet.create({
   hasIncident: {
     borderColor: yellowColor,
   },
-  packageText: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'flex-end',
-    alignSelf: 'flex-end',
-  },
-  row: {
-    flexWrap: 'wrap',
-  },
-  rowRight: {
-    flexWrap: 'wrap',
-    justifyContent: 'flex-end',
-  },
 });
 
 interface DropoffArrowsProps {
@@ -186,32 +173,23 @@ export default function TaskInfo({ task, isPickup, taskTestId }: ITaskInfoProps)
         <Text numberOfLines={1} style={alignedTextStyle}>
           {task.address.streetAddress}
         </Text>
-        <HStack className="items-center" style={isPickup ? styles.rowRight : styles.row}>
+        <HStack className={classNames('items-center flex-wrap', { 'justify-end': isPickup })}>
           {isPickup ? (
             <>
               {packagesText && (
-                <View style={styles.packageText}>
-                  <Text style={{ textAlign: 'right' }}>
-                    {packagesText} |
-                  </Text>
+                <View className="self-end">
+                  <Text style={{ textAlign: 'right' }}>{packagesText} |</Text>
                 </View>
               )}
               <Text style={{ textAlign: 'right' }}> {getTimeFrame(task)} </Text>
-              {task.comments && <FAIcon name="comments" />}
             </>
           ) : (
             <>
               <Text>{getTimeFrame(task)} </Text>
-              {packagesText && (
-                <View style={styles.packageText}>
-                  <Text>
-                    | {packagesText}
-                  </Text>
-                </View>
-              )}
-              {task.comments && <FAIcon name="comments" />}
+              {packagesText && <Text>| {packagesText}</Text>}
             </>
           )}
+          {task.comments && <FAIcon name="comments" />}
         </HStack>
         {task.tags && task.tags.length ? (
           <View style={isPickup ? { alignSelf: 'flex-end' } : undefined}>
