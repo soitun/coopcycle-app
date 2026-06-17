@@ -7,7 +7,7 @@ import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import { Task } from '../types/task';
-import FAIcon from './Icon';
+import { MessageCircleMore, Recycle } from 'lucide-react-native';
 
 import { Divider } from '@/components/ui/divider';
 import {
@@ -153,7 +153,8 @@ export default function TaskInfo({ task, isPickup, taskTestId }: ITaskInfoProps)
               )}
             </>
           )}
-          {task.comments && <FAIcon name="comments" />}
+          {task.comments && <Icon as={MessageCircleMore} size="sm" />}
+          {(task.metadata?.zero_waste || task.metadata?.has_loopeat_returns) && <Icon as={Recycle} size="sm" /> }
         </HStack>
         {task.tags && task.tags.length ? (
           <View style={isPickup ? { alignSelf: 'flex-end' } : undefined}>

@@ -72,6 +72,7 @@ export interface TaskMetadata {
   order_distance?: string;
   order_duration?: string;
   polyline?: string;
+  has_loopeat_returns?: boolean;
 }
 
 /**
