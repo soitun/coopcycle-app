@@ -14,7 +14,7 @@ on:
         description: 'Upload to Google Play'
         required: true
         type: boolean
-        default: false
+        default: true
       google_play_track:
         description: 'Google Play track, e.g. "internal", "production"'
         required: false
@@ -24,7 +24,7 @@ on:
         description: 'Select apps to build (e.g., "coopcycle, naofood" or "-kooglof, -robinfood")'
         required: false
         type: string
-        default: '-robinfood, -eraman, -coopcycle_beta'
+        default: 'coopcycle'
 
 jobs:
   filter-matrix:
