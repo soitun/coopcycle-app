@@ -15,8 +15,8 @@ import {
   setAddress,
 } from '../../redux/Checkout/actions';
 import { selectAddresses } from '../../redux/Checkout/selectors';
-import { greyColor } from '../../styles/common';
 import Address from '../../utils/Address';
+import classNames from 'classnames'
 
 function EmptyAddressList() {
   const { t } = useTranslation();
@@ -43,12 +43,6 @@ function AddressRow({ item, selectedAddress }) {
   const route = useRoute();
   const dispatch = useDispatch();
 
-  const color = selectedAddress
-    ? Address.geoDiff(selectedAddress, item)
-      ? greyColor
-      : 'transparent'
-    : 'transparent';
-
   function handlePress() {
     if (route.params?.action) {
       const addressPrecise = { ...item, isPrecise: true };
@@ -68,11 +62,12 @@ function AddressRow({ item, selectedAddress }) {
     }
   }
 
+  const isSameAddress = Address.geoDiff(selectedAddress, item)
+
   return (
     <TouchableOpacity onPress={handlePress}>
       <HStack
-        style={{ backgroundColor: color }}
-        className="px-2 py-3 justify-between">
+        className={ classNames("px-2 py-3 justify-between", { 'bg-info-200': isSameAddress }) }>
         <Text>{item.streetAddress}</Text>
         <Text>{item.name}</Text>
       </HStack>
