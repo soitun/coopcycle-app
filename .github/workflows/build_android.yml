@@ -232,6 +232,7 @@ jobs:
       matrix:
         app: ${{ fromJson(needs.filter-matrix.outputs.matrix) }}
       fail-fast: false
+      max-parallel: ${{ inputs.deploy_google_play && 1 || 0 }}
     uses: ./.github/workflows/fastlane_android.yml
     with:
       tag: ${{ inputs.tag }}
