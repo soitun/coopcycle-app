@@ -9,6 +9,7 @@ import classNames from 'classnames';
 import { Task } from '../types/task';
 import FAIcon from './Icon';
 
+import { Divider } from '@/components/ui/divider';
 import {
   DropoffIcon,
 } from '../navigation/task/styles/common';
@@ -130,20 +131,26 @@ export default function TaskInfo({ task, isPickup, taskTestId }: ITaskInfoProps)
         <Text numberOfLines={1} style={alignedTextStyle}>
           {task.address.streetAddress}
         </Text>
-        <HStack className={classNames('items-center flex-wrap', { 'justify-end': isPickup })}>
+        <HStack className={classNames('items-center flex-wrap gap-2', { 'justify-end': isPickup })}>
           {isPickup ? (
             <>
               {packagesText && (
-                <View className="self-end">
-                  <Text style={{ textAlign: 'right' }}>{packagesText} |</Text>
-                </View>
+                <>
+                  <Text className="text-right">{packagesText}</Text>
+                  <Divider orientation="vertical" />
+                </>
               )}
-              <Text style={{ textAlign: 'right' }}> {getTimeFrame(task)} </Text>
+              <Text className="text-right">{getTimeFrame(task)}</Text>
             </>
           ) : (
             <>
-              <Text>{getTimeFrame(task)} </Text>
-              {packagesText && <Text>| {packagesText}</Text>}
+              <Text>{getTimeFrame(task)}</Text>
+              {packagesText && (
+                <>
+                  <Divider orientation="vertical" />
+                  <Text>{packagesText}</Text>
+                </>
+              )}
             </>
           )}
           {task.comments && <FAIcon name="comments" />}
