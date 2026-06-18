@@ -127,6 +127,7 @@ function Photo({ navigation, route, addPicture }) {
             onPress={takePicture}
             size="lg"
             variant="solid"
+            className="absolute bottom-4"
             style={styles.cameraButton}
           >
             <ButtonIcon size={32} as={CameraIcon} />
@@ -167,8 +168,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   cameraButton: {
-    position: 'absolute',
-    bottom: 20,
     alignSelf: 'center',
     width: 80,
     height: 80,
