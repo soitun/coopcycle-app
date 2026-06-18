@@ -1,7 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
-import { TransitionPresets } from '@react-navigation/stack';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { Icon } from '@/components/ui/icon';
 import { User, House, Search, ShoppingCart } from 'lucide-react-native';
 import { Text } from '@/components/ui/text';
@@ -129,7 +128,7 @@ function Tabs({ rootNavigation: navigation }) {
   );
 }
 
-const MainStack = createNativeStackNavigator();
+const MainStack = createStackNavigator();
 
 const MainNavigator = () => {
   const screenOptions = useStackNavigatorScreenOptions();
@@ -231,7 +230,7 @@ const MainNavigator = () => {
   );
 };
 
-const SubmitOrderStack = createNativeStackNavigator();
+const SubmitOrderStack = createStackNavigator();
 
 const SubmitOrderNavigator = () => {
 
@@ -363,7 +362,7 @@ const SubmitOrderNavigator = () => {
     </SubmitOrderStack.Navigator>
   );
 };
-const RootStack = createNativeStackNavigator();
+const RootStack = createStackNavigator();
 
 const DefaultNav = () => {
   const screenOptions = useStackNavigatorScreenOptions();

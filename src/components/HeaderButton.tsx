@@ -1,20 +1,25 @@
 import React from 'react';
-import { useColorScheme } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   HeaderButton,
   HeaderButtons,
   Item,
 } from 'react-navigation-header-buttons';
+import { usePrimaryContentColor } from '../styles/theme';
 
 const HeaderButtonComponent = props => {
-
-  const colorScheme = useColorScheme();
+  const color = usePrimaryContentColor();
 
   return (
-    <HeaderButton {...props} IconComponent={Ionicons} iconSize={24} color={ colorScheme === 'dark' ? '#fff' : '#000' } />
+    <HeaderButton
+      {...props}
+      IconComponent={Ionicons}
+      iconSize={24}
+      color={color}
+      buttonStyle={{ backgroundColor: 'transparent' }}
+    />
   );
-}
+};
 
 const HeaderButtonsWrapper = ({ children }) => {
   return (
@@ -22,13 +27,11 @@ const HeaderButtonsWrapper = ({ children }) => {
       {children}
     </HeaderButtons>
   );
-}
+};
 
 const ItemWrapper = (props) => {
-  const colorScheme = useColorScheme();
+  const color = usePrimaryContentColor();
   const { disabled, style, ...restProps } = props;
-
-  const color = colorScheme === 'dark' ? '#fff' : '#000';
   const opacity = disabled ? 0.4 : 1;
 
   return (
