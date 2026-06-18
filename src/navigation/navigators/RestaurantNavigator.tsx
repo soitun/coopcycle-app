@@ -1,4 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import { useSelector } from 'react-redux';
 
 import React from 'react';
@@ -12,7 +13,7 @@ import HeaderRight from '../restaurant/components/HeaderRight';
 import { selectRestaurant } from '../../redux/Restaurant/selectors';
 import { useStackNavigatorScreenOptions } from '../styles';
 
-const MainStack = createNativeStackNavigator();
+const MainStack = createStackNavigator();
 
 const MainNavigator = () => {
 

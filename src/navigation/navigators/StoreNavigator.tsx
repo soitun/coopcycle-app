@@ -1,4 +1,4 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { StackActions, CommonActions } from '@react-navigation/native';
 import { HeaderButton as RNHeaderButton } from '@react-navigation/elements';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,13 +16,9 @@ import { useTranslation } from 'react-i18next';
 import NavigationHolder from '../../NavigationHolder';
 import screens, { headerLeft } from '..';
 
-const RootStack = createNativeStackNavigator();
+const RootStack = createStackNavigator();
 
 export default ({ navigation }) => {
-
-  const screenOptions = useStackNavigatorScreenOptions({
-    presentation: 'modal',
-  });
 
   const { t } = useTranslation();
 
@@ -100,7 +96,7 @@ export default ({ navigation }) => {
         </RootStack.Group>
         <RootStack.Group
           screenOptions={ useStackNavigatorScreenOptions({
-            presentation: 'modal',
+            ...TransitionPresets.ModalPresentationIOS,
             headerTitle: t('STORE_NEW_DELIVERY'),
             headerLeft: props => (
               <RNHeaderButton
