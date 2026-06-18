@@ -1,9 +1,9 @@
 import { fontTitleName } from '../styles/common';
-import { useBackgroundContainerColor, useBaseTextColor } from '../styles/theme';
+import { usePrimaryColor, usePrimaryContentColor } from '../styles/theme';
 
 export function useStackNavigatorScreenOptions(props = {}) {
-  const backgroundColor = useBackgroundContainerColor();
-  const color = useBaseTextColor();
+  const backgroundColor = usePrimaryColor();
+  const color = usePrimaryContentColor();
 
   return {
     headerStyle: {

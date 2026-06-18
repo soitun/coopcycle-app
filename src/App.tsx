@@ -194,9 +194,9 @@ const App = () => {
   return (
     <DatadogWrapper>
       <BottomSheetModalProvider>
-        <UIProvider>
-          <RootView>
-            <Provider store={store}>
+        <RootView>
+          <Provider store={store}>
+            <UIProvider>
               <PersistGate
                 loading={
                   <FullScreenLoadingIndicator debugHint="Initialising the Redux state ..." />
@@ -233,9 +233,9 @@ const App = () => {
                   </QueryClientProvider>
                 </I18nextProvider>
               </PersistGate>
-            </Provider>
-          </RootView>
-        </UIProvider>
+            </UIProvider>
+          </Provider>
+        </RootView>
       </BottomSheetModalProvider>
     </DatadogWrapper>
   );

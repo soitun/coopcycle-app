@@ -233,6 +233,8 @@ export const selectNotificationsToDisplay = createSelector(
     }),
 );
 
+export const selectServerTheme = state => state.app.settings?.theme ?? null;
+
 export const selectSettingsLatLng = state => state.app.settings.latlng;
 export const selectStripePublishableKey = state =>
   state.app.settings.stripe_publishable_key;
