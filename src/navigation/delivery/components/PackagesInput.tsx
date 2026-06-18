@@ -6,7 +6,7 @@ import { Text } from '@/components/ui/text';
 import { usePackagesCount } from '@/src/navigation/delivery/hooks/usePackagesCount';
 import { StorePackage } from '@/src/redux/api/types';
 import Range from '@/src/navigation/checkout/ProductDetails/Range';
-import { useBackgroundContainerColor } from '@/src/styles/theme';
+import { useColorModeValue } from '@/src/styles/theme';
 import {
   BasePackagesFields,
   PackageWithQuantity,
@@ -24,7 +24,7 @@ export const PackagesInput = ({
   disabled,
 }: Props) => {
   const { t } = useTranslation();
-  const backgroundColor = useBackgroundContainerColor();
+  const backgroundColor = useColorModeValue('rgb(246 246 246)', 'rgb(39 38 37)');
 
   const { packagesCount, incrementQuantity, decrementQuantity } =
     usePackagesCount(packages, initialPackagesCount);

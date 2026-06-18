@@ -2,7 +2,6 @@ import { Text } from '@/components/ui/text';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useBackgroundHighlightColor } from '../../../styles/theme';
 
 const styles = StyleSheet.create({
   button: {
@@ -40,16 +39,15 @@ type Props = {
 };
 
 function Range({ onPressDecrement, quantity, onPressIncrement, minimum = 0, disabled = false, testID }: Props) {
-  const buttonBackgroundColor = useBackgroundHighlightColor();
-
   return (
     <View style={styles.rangeButtonWrapper}>
       <TouchableOpacity
         testID={`${testID ? testID + ':' : ''}range-decrement-button`}
-        style={[styles.button, { backgroundColor: buttonBackgroundColor }]}
+        className="bg-background-100"
+        style={styles.button}
         disabled={disabled || quantity <= minimum}
         onPress={onPressDecrement}>
-        <Text style={quantity === 0 && { color: buttonBackgroundColor }}>
+        <Text className={quantity === 0 ? 'text-background-100' : ''}>
           -
         </Text>
       </TouchableOpacity>
@@ -58,7 +56,8 @@ function Range({ onPressDecrement, quantity, onPressIncrement, minimum = 0, disa
       </View>
       <TouchableOpacity
         testID={`${testID ? testID + ':' : ''}range-increment-button`}
-        style={[styles.button, { backgroundColor: buttonBackgroundColor }]}
+        className="bg-background-100"
+        style={styles.button}
         disabled={disabled}
         onPress={onPressIncrement}>
         <Text>+</Text>

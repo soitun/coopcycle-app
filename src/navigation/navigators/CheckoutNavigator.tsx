@@ -1,7 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
-import { TransitionPresets } from '@react-navigation/stack';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { Icon } from '@/components/ui/icon';
 import { User, House, Search, ShoppingCart } from 'lucide-react-native';
 import { Text } from '@/components/ui/text';
@@ -17,7 +16,6 @@ import {
 } from '../../redux/App/selectors';
 import store from '../../redux/store';
 import {
-  useBaseTextColor,
   usePrimaryColor,
 } from '../../styles/theme';
 import CartsBadge from '../checkout/components/CartsBadge';
@@ -27,13 +25,11 @@ import AccountNavigator from './AccountNavigator';
 import { HeaderButtons, HeaderButton } from '../../components/HeaderButton';
 
 const MyOrderButton = ({ navigation }) => {
-  const color = useBaseTextColor();
-
   return (
     <TouchableOpacity
       style={{ paddingHorizontal: 10 }}
       onPress={() => navigation()}>
-      <Text style={{ color }}>{i18n.t('MY_ORDERS')}</Text>
+      <Text className="text-typography-950">{i18n.t('MY_ORDERS')}</Text>
     </TouchableOpacity>
   );
 };
@@ -129,7 +125,7 @@ function Tabs({ rootNavigation: navigation }) {
   );
 }
 
-const MainStack = createNativeStackNavigator();
+const MainStack = createStackNavigator();
 
 const MainNavigator = () => {
   const screenOptions = useStackNavigatorScreenOptions();
@@ -231,7 +227,7 @@ const MainNavigator = () => {
   );
 };
 
-const SubmitOrderStack = createNativeStackNavigator();
+const SubmitOrderStack = createStackNavigator();
 
 const SubmitOrderNavigator = () => {
 
@@ -363,7 +359,7 @@ const SubmitOrderNavigator = () => {
     </SubmitOrderStack.Navigator>
   );
 };
-const RootStack = createNativeStackNavigator();
+const RootStack = createStackNavigator();
 
 const DefaultNav = () => {
   const screenOptions = useStackNavigatorScreenOptions();

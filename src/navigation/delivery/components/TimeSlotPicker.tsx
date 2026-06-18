@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useFormikContext } from 'formik';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
-import { useBackgroundHighlightColor } from '../../../styles/theme';
+import { useColorModeValue } from '../../../styles/theme';
 import { StoreTimeSlot } from '@/src/redux/api/types';
 import { TimeSlotChoiceSelect } from '@/src/navigation/delivery/components/TimeSlotChoiceSelect';
 import { useGetTimeSlotChoicesQuery } from '@/src/redux/api/slice';
@@ -46,7 +46,7 @@ export default function TimeSlotPicker({
 }: Props) {
   const { t } = useTranslation();
 
-  const backgroundHighlightColor = useBackgroundHighlightColor();
+  const backgroundHighlightColor = useColorModeValue('#f2f2f2', '#353030');
 
   const { values, touched, errors, setFieldValue, setFieldTouched } =
     useFormikContext<BaseTimeSlotFields>();

@@ -647,6 +647,7 @@
     "CHECKOUT_CONTINUE": "Continue checkout",
     "RESTAURANT_PRODUCT_DISABLE_ENABLE_TOMORROW": "Do you want to re-enable this product tomorrow?",
     "NO_THANKS": "No, thanks",
-    "YES": "Yes"
+    "YES": "Yes",
+    "FIND_ME": "Find me"
 }
 }

@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import React, { useMemo, useRef, useState } from 'react';
+import { Box } from '@/components/ui/box';
 import { SectionList, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import ItemSeparator from '../../../components/ItemSeparator';
 import { addItemV2 } from '../../../redux/Checkout/actions';
-import { useBackgroundContainerColor } from '../../../styles/theme';
 import { formatPrice } from '../../../utils/formatting';
 import { isAdditionalOption } from '../../../utils/product';
 import FooterButton from '../components/FooterButton';
@@ -25,14 +25,12 @@ const LIST_SECTION_OPTION = 'option';
 const PADDING = 24;
 
 function ListHeaderComponent({ product }) {
-  const backgroundColor = useBackgroundContainerColor();
-
   return (
     <>
       <ProductImage product={product} />
-      <View style={{ padding: PADDING, paddingBottom: 0, backgroundColor }}>
+      <Box className="bg-background-50" style={{ padding: PADDING, paddingBottom: 0 }}>
         <ProductInfo product={product} />
-      </View>
+      </Box>
     </>
   );
 }
@@ -52,8 +50,6 @@ export default props => {
     increment,
     decrement,
   } = useProductOptionsBuilder(productOptions);
-  const backgroundColor = useBackgroundContainerColor();
-
   const list = useRef();
 
   const { t } = useTranslation();
@@ -161,9 +157,9 @@ export default props => {
         keyExtractor={(item, index) => index}
         stickySectionHeadersEnabled={true}
         renderSectionFooter={() => (
-          <View style={{ paddingTop: PADDING, backgroundColor }}>
+          <Box className="bg-background-50" style={{ paddingTop: PADDING }}>
             <ItemSeparator />
-          </View>
+          </Box>
         )}
         ListHeaderComponent={<ListHeaderComponent product={product} />}
         renderSectionHeader={({ section }) => {
@@ -174,28 +170,24 @@ export default props => {
           }
         }}
         renderItem={({ item, section, index }) => {
-          const style = {
-            padding: PADDING,
-            backgroundColor,
-          };
           if (section.type === LIST_SECTION_QUANTITY) {
             return (
-              <View style={[style, { paddingBottom: 0 }]}>
+              <Box className="bg-background-50" style={{ padding: PADDING, paddingBottom: 0 }}>
                 <ProductQuantity
                   quantity={quantity}
                   setQuantity={setQuantity}
                 />
-              </View>
+              </Box>
             );
           } else if (section.type === LIST_SECTION_OPTIONS_HEADER) {
             return (
-              <View style={[style, { paddingBottom: 0 }]}>
+              <Box className="bg-background-50" style={{ padding: PADDING, paddingBottom: 0 }}>
                 <OptionsSectionHeader options={productOptions} />
-              </View>
+              </Box>
             );
           } else if (section.type === LIST_SECTION_OPTION) {
             return (
-              <View style={[style, { paddingVertical: 8 }]}>
+              <Box className="bg-background-50" style={{ padding: PADDING, paddingVertical: 8 }}>
                 <OptionValue
                   option={section}
                   optionValue={item}
@@ -206,7 +198,7 @@ export default props => {
                   increment={increment}
                   decrement={decrement}
                 />
-              </View>
+              </Box>
             );
           } else {
             return null;

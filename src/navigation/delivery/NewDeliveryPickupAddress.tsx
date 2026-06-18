@@ -16,7 +16,7 @@ import { CheckIcon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { selectStore } from '../../redux/Delivery/selectors';
 import {
-  useBackgroundContainerColor,
+  useColorModeValue,
   usePrimaryColor,
 } from '../../styles/theme';
 import ModalFormWrapper from './ModalFormWrapper';
@@ -27,7 +27,7 @@ import { selectCountry } from '@/src/redux/App/selectors';
 function NewDeliveryPickupAddress({ navigation }) {
   const [customAddress, setCustomAddress] = useState(false);
 
-  const backgroundColor = useBackgroundContainerColor();
+  const backgroundColor = useColorModeValue('rgb(246 246 246)', 'rgb(39 38 37)');
   const primaryColor = usePrimaryColor();
 
   const country = useSelector(selectCountry);

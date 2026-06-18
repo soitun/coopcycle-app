@@ -10,7 +10,7 @@ import { VStack } from '@/components/ui/vstack';
 import { Box } from '@/components/ui/box';
 import { Pressable } from '@/components/ui/pressable';
 import React from 'react';
-import { withTranslation, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Animated, Dimensions, FlatList, Image, View, TouchableOpacity } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Reanimated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
@@ -21,7 +21,6 @@ import { useNavigation } from '@react-navigation/native';
 import { deleteCart, setRestaurant } from '../../redux/Checkout/actions';
 import { selectCarts } from '../../redux/Checkout/selectors';
 import { greyColor, primaryColor } from '../../styles/common';
-import { useSecondaryTextColor } from '../../styles/theme';
 import { formatPrice } from '../../utils/formatting';
 
 const AnimatedView = Animated.createAnimatedComponent(View);
@@ -45,7 +44,7 @@ function RightAction({ translation, onPress }) {
   );
 }
 
-const EmptyList = ({ secondaryTextColor }) => {
+const EmptyList = () => {
 
   const { t } = useTranslation();
   const navigation = useNavigation();
@@ -67,8 +66,7 @@ const EmptyList = ({ secondaryTextColor }) => {
         resizeMode={'contain'}
       />
       <Heading>{t('EMPTY_CARTS_TITLE')}</Heading>
-      <Text
-        color={secondaryTextColor}>
+      <Text className="text-typography-500">
         {t('EMPTY_CARTS_SUBTITLE')}
       </Text>
       <Button
@@ -79,7 +77,7 @@ const EmptyList = ({ secondaryTextColor }) => {
   )
 }
 
-const ListItem = ({ item, deleteCart, setRestaurant, secondaryTextColor }) => {
+const ListItem = ({ item, deleteCart, setRestaurant }) => {
 
   const { t } = useTranslation();
   const navigation = useNavigation();
@@ -118,14 +116,14 @@ const ListItem = ({ item, deleteCart, setRestaurant, secondaryTextColor }) => {
             </Avatar>
             <VStack>
               <Text bold>{item.restaurant.name}</Text>
-              <Text color={secondaryTextColor}>
+              <Text className="text-typography-500">
                 {t('ITEM', { count: item.cart.items.length })} •{' '}
                 {formatPrice(item.cart.total)}
               </Text>
               <Text
                 numberOfLines={1}
                 maxWidth={width - 170}
-                color={secondaryTextColor}>
+                className="text-typography-500">
                 {item.cart.shippingAddress?.streetAddress}
               </Text>
             </VStack>
@@ -139,7 +137,7 @@ const ListItem = ({ item, deleteCart, setRestaurant, secondaryTextColor }) => {
   );
 }
 
-const Carts = ({ carts, deleteCart, setRestaurant, secondaryTextColor }) => {
+const Carts = ({ carts, deleteCart, setRestaurant }) => {
 
   return (
     <FlatList
@@ -150,10 +148,9 @@ const Carts = ({ carts, deleteCart, setRestaurant, secondaryTextColor }) => {
         <ListItem
           item={item}
           deleteCart={deleteCart}
-          setRestaurant={setRestaurant}
-          secondaryTextColor={secondaryTextColor} />
+          setRestaurant={setRestaurant} />
       )}
-      ListEmptyComponent={() => <EmptyList secondaryTextColor={secondaryTextColor} />}
+      ListEmptyComponent={() => <EmptyList />}
     />
   );
 }
@@ -171,16 +168,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-function withHooks(ClassComponent) {
-  return function CompWithHook(props) {
-    const secondaryTextColor = useSecondaryTextColor();
-    return (
-      <ClassComponent {...props} secondaryTextColor={secondaryTextColor} />
-    );
-  };
-}
-
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(withTranslation()(withHooks(Carts)));
+)(Carts);

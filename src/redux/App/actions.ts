@@ -743,6 +743,7 @@ export function resetServer() {
 
     dispatch(clearAddress());
     dispatch(setBaseURL(null));
+    dispatch(setSettings(null));
   };
 }
 

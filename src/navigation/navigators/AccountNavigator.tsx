@@ -1,5 +1,4 @@
-import { TransitionPresets } from '@react-navigation/stack';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import React from 'react';
 
 import screens, { headerLeft } from '..';
@@ -8,7 +7,7 @@ import AccountRegisterConfirm from '../account/RegisterConfirm';
 import AccountResetPasswordNewPassword from '../account/ResetPasswordNewPassword';
 import { useStackNavigatorScreenOptions } from '../styles';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 export const AccountRegisterConfirmScreen = 'AccountRegisterConfirm';
 export const AccountResetPasswordNewPasswordScreen =

@@ -4,7 +4,6 @@ import { AbortController } from 'abortcontroller-polyfill/dist/cjs-ponyfill';
 import axios from 'axios';
 import Fuse from 'fuse.js';
 import _ from 'lodash';
-import { useColorModeValue } from '../styles/theme';
 import { HStack } from '@/components/ui/hstack';
 import { Icon, StarIcon } from '@/components/ui/icon';
 import { Input, InputField } from '@/components/ui/input';
@@ -26,8 +25,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { localeDetector } from '../i18n';
 import {
-  useBackgroundContainerColor,
-  useBaseTextColor,
+  useColorModeValue,
   usePrimaryColor,
 } from '../styles/theme';
 import AddressUtils, { AutocompleteAddress } from '../utils/Address';
@@ -514,7 +512,7 @@ function AddressAutocomplete({
               onPress={() => setShowPickerModal(true)}
               testID="map-picker-button-large"
               accessibilityLabel={t('PICK_ON_MAP')}>
-              <ButtonText>Find me</ButtonText>
+              <ButtonText>{ t('FIND_ME') }</ButtonText>
             </Button>
           </>
         )}
@@ -577,11 +575,9 @@ function mapStateToProps(state) {
 
 function withHooks(ClassComponent: React.ComponentType<AddressAutocompleteProps>) {
   return function CompWithHook(props: AddressAutocompleteProps) {
-    const baseTextColor = useBaseTextColor();
-
+    const baseTextColor = useColorModeValue('rgb(23 23 23)', 'rgb(254 254 255)');
     const itemTextColor = useColorModeValue('#856404', baseTextColor);
-
-    const backgroundColor = useBackgroundContainerColor();
+    const backgroundColor = useColorModeValue('rgb(246 246 246)', 'rgb(39 38 37)');
     const primaryColor = usePrimaryColor();
 
     return (

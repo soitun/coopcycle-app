@@ -11,8 +11,7 @@ import _ from 'lodash';
 import { useSelector } from 'react-redux';
 import { selectAssertDeliveryError } from '@/src/redux/Delivery/selectors';
 import {
-  useBackgroundContainerColor,
-  useBackgroundHighlightColor,
+  useColorModeValue,
   usePrimaryColor,
 } from '@/src/styles/theme';
 import { assertDelivery } from '@/src/redux/Delivery/actions';
@@ -38,8 +37,8 @@ export const AddressFields = ({
   const { t } = useTranslation();
 
   const primaryColor = usePrimaryColor();
-  const backgroundColor = useBackgroundContainerColor();
-  const backgroundHighlightColor = useBackgroundHighlightColor();
+  const backgroundColor = useColorModeValue('rgb(246 246 246)', 'rgb(39 38 37)');
+  const backgroundHighlightColor = useColorModeValue('#f2f2f2', '#353030');
 
   const dispatch = useAppDispatch();
 

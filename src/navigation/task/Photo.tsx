@@ -119,8 +119,7 @@ function Photo({ navigation, route, addPicture }) {
           <Button
             onPress={() => setFlash(f => !f)}
             variant="solid"
-            colorScheme="yellow"
-            style={styles.flash}
+            className="absolute top-4 left-4 bg-warning-400"
           >
             <ButtonIcon as={flash ? Zap : ZapOff} />
           </Button>
@@ -128,11 +127,13 @@ function Photo({ navigation, route, addPicture }) {
             onPress={takePicture}
             size="lg"
             variant="solid"
+            className="absolute bottom-4"
             style={styles.cameraButton}
           >
             <ButtonIcon size={32} as={CameraIcon} />
           </Button>
           <View
+            className="absolute top-4 right-4 bg-background-200 border border-outline-800"
             style={[
               styles.preview,
               { width: previewSize, height: previewSize },
@@ -165,21 +166,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'white',
-    borderColor: '#000000',
-    borderWidth: 1,
-    position: 'absolute',
-    top: 15,
-    right: 15,
-  },
-  flash: {
-    position: 'absolute',
-    top: 15,
-    left: 15,
   },
   cameraButton: {
-    position: 'absolute',
-    bottom: 20,
     alignSelf: 'center',
     width: 80,
     height: 80,

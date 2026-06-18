@@ -1,4 +1,5 @@
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { Box } from '@/components/ui/box';
 import { Text } from '@/components/ui/text';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -18,7 +19,6 @@ import {
 } from '../../shared/logistics/redux';
 import { selectDispatchUiTaskFilters } from '../../redux/Dispatch/selectors';
 import { useAllTasks } from './useAllTasks';
-import { useBackgroundHighlightColor, useSecondaryTextColor } from '../../styles/theme';
 import AddButton from './components/AddButton';
 import TasksMapView from '../../components/TasksMapView';
 import { BottomSheet } from '@/components/ui/bottomsheet';
@@ -53,7 +53,6 @@ export default function TasksMap({ navigation, route }) {
   const allUnassignedTasks = useSelector(selectUnassignedTasksNotCancelled);
   const defaultCoordinates = useSelector(selectSettingsLatLng);
   const selectedDate = useSelector(selectSelectedDate);
-  const bgHighlightColor = useBackgroundHighlightColor();
 
   const { isFetching } = useAllTasks(selectedDate);
 
@@ -78,7 +77,7 @@ export default function TasksMap({ navigation, route }) {
 
   return (
     <>
-      <View style={{ backgroundColor: bgHighlightColor }}>
+      <Box className="bg-background-100">
         <AddButton
           testID="dispatchNewDelivery"
           onPress={() => navigation.navigate('DispatchNewDelivery')}>
@@ -86,7 +85,7 @@ export default function TasksMap({ navigation, route }) {
             {selectedDate.format('ll')}
           </Text>
         </AddButton>
-      </View>
+      </Box>
       <View style={styles.mapContainer}>
         <BottomSheet>
           <TasksMapView

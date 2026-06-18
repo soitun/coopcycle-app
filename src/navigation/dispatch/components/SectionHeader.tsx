@@ -1,8 +1,7 @@
 import { useTranslation } from 'react-i18next';
+import { Box } from '@/components/ui/box';
 import { Text } from '@/components/ui/text';
 import { TouchableOpacity, View } from 'react-native';
-
-import { useBackgroundHighlightColor } from '../../../styles/theme';
 import { darkGreyColor, whiteColor } from '../../../styles/common';
 import FAIcon from '@/src/components/Icon';
 
@@ -22,10 +21,9 @@ interface SectionHeaderProps {
 
 export function SectionHeader({ section, isExpanded, onToggle }: SectionHeaderProps) {
   const { t } = useTranslation();
-  const bgHighlightColor = useBackgroundHighlightColor();
 
   return (
-    <View style={{ backgroundColor: bgHighlightColor }}>
+    <Box className="bg-background-100">
       <TouchableOpacity
         onPress={onToggle}
         activeOpacity={0.5}
@@ -70,6 +68,6 @@ export function SectionHeader({ section, isExpanded, onToggle }: SectionHeaderPr
           />
         )}
       </TouchableOpacity>
-    </View>
+    </Box>
   );
 }

@@ -1,9 +1,9 @@
 import React from 'react';
 import RNMarkdown from 'react-native-markdown-display';
-import { useBaseTextColor } from '../styles/theme';
+import { useColorModeValue } from '../styles/theme';
 
 export default function Markdown({ children, style, ...props }) {
-  const baseTextColor = useBaseTextColor();
+  const baseTextColor = useColorModeValue('rgb(23 23 23)', 'rgb(254 254 255)');
 
   const componentStyle = {
     body: {
