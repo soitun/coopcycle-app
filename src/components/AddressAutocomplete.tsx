@@ -512,7 +512,7 @@ function AddressAutocomplete({
               onPress={() => setShowPickerModal(true)}
               testID="map-picker-button-large"
               accessibilityLabel={t('PICK_ON_MAP')}>
-              <ButtonText>Find me</ButtonText>
+              <ButtonText>{ t('FIND_ME') }</ButtonText>
             </Button>
           </>
         )}

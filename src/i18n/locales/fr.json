@@ -614,6 +614,7 @@
     "CHECKOUT_CONTINUE": "Continuer la commande",
     "RESTAURANT_PRODUCT_DISABLE_ENABLE_TOMORROW": "Voulez-vous réactiver ce produit demain ?",
     "NO_THANKS": "Non, merci",
-    "YES": "Oui"
+    "YES": "Oui",
+    "FIND_ME": "Localisez moi"
   }
 }
