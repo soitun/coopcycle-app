@@ -7,7 +7,6 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import screens, { headerLeft } from '..';
 import i18n from '../../i18n';
-import { useBaseTextColor } from '../../styles/theme';
 import { useStackNavigatorScreenOptions } from '../styles';
 import OrderNavigator from './OrderNavigator';
 import TaskNavigator from './TaskNavigator';

@@ -10,8 +10,6 @@ import { newAddress } from '../../redux/Account/actions';
 import { searchRestaurantsForAddress } from '../../redux/Checkout/actions';
 import {
   useBackgroundColor,
-  useBaseTextColor,
-  useSecondaryTextColor,
 } from '../../styles/theme';
 
 const textInputContainerHeight = 54;
@@ -20,8 +18,6 @@ const autocompleteListMarginBottom = 8;
 const AskAddress = props => {
   const [autocompleteListHeight, setAutocompleteListHeight] = useState(0);
   const backgroundColor = useBackgroundColor();
-  const textColor = useBaseTextColor();
-  const secondaryTextColor = useSecondaryTextColor();
 
   const onLayout = event => {
     const currentFrame = event.nativeEvent.layout;
@@ -40,8 +36,8 @@ const AskAddress = props => {
       testID="checkoutAskAddress"
       style={{ backgroundColor, flex: 1, padding: 20 }}>
       <Box style={{ flex: 1, justifyContent: 'flex-end', marginBottom: 20 }}>
-        <Heading color={textColor}>{props.t('WHERE_ARE_YOU')}</Heading>
-        <Text color={secondaryTextColor}>
+        <Heading className="text-typography-950">{props.t('WHERE_ARE_YOU')}</Heading>
+        <Text className="text-typography-500">
           {props.t('ASK_ADDRESS_DISCLAIMER')}
         </Text>
       </Box>

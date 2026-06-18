@@ -3,7 +3,6 @@ import { Button, ButtonText } from '@/components/ui/button';
 import { VStack } from '@/components/ui/vstack';
 import { SafeAreaView, ScrollView } from 'react-native';
 import KeyboardAdjustView from '../../components/KeyboardAdjustView';
-import { useBackgroundContainerColor } from '../../styles/theme';
 
 export default function ModalFormWrapper({
   children,
@@ -13,8 +12,6 @@ export default function ModalFormWrapper({
   disabled = false,
   disabledMessage,
 }) {
-  const backgroundColor = useBackgroundContainerColor();
-
   const buttonLabel = disabled
     ? disabledMessage
     : isSubmit
@@ -23,16 +20,11 @@ export default function ModalFormWrapper({
 
   return (
     <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor,
-      }}>
+      className="bg-background-50"
+      style={{ flex: 1 }}>
       <VStack
         flex={1}
-        className="justify-between"
-        style={{
-          backgroundColor,
-        }}>
+        className="justify-between bg-background-50">
         <KeyboardAdjustView style={{ flex: 1 }}>
           <ScrollView
             keyboardShouldPersistTaps="handled" // tap is handled by the children in the forms

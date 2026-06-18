@@ -16,7 +16,6 @@ import {
 } from '../../redux/App/selectors';
 import store from '../../redux/store';
 import {
-  useBaseTextColor,
   usePrimaryColor,
 } from '../../styles/theme';
 import CartsBadge from '../checkout/components/CartsBadge';
@@ -26,13 +25,11 @@ import AccountNavigator from './AccountNavigator';
 import { HeaderButtons, HeaderButton } from '../../components/HeaderButton';
 
 const MyOrderButton = ({ navigation }) => {
-  const color = useBaseTextColor();
-
   return (
     <TouchableOpacity
       style={{ paddingHorizontal: 10 }}
       onPress={() => navigation()}>
-      <Text style={{ color }}>{i18n.t('MY_ORDERS')}</Text>
+      <Text className="text-typography-950">{i18n.t('MY_ORDERS')}</Text>
     </TouchableOpacity>
   );
 };

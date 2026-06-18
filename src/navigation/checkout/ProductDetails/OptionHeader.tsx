@@ -1,9 +1,9 @@
+import { Box } from '@/components/ui/box';
 import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
-import { useBackgroundContainerColor } from '../../../styles/theme';
+import { StyleSheet } from 'react-native';
 import {
   isMandatoryOption,
   parseOptionValuesRange,
@@ -30,11 +30,10 @@ const styles = StyleSheet.create({
 });
 
 export const OptionHeader = ({ option }) => {
-  const backgroundColor = useBackgroundContainerColor();
   const { t } = useTranslation();
 
   return (
-    <View style={[styles.header, { backgroundColor }]}>
+    <Box className="bg-background-50" style={styles.header}>
       <Heading style={styles.title}>
         {option.name}{' '}
         {isMandatoryOption(option) && (
@@ -46,7 +45,7 @@ export const OptionHeader = ({ option }) => {
       {option.valuesRange ? (
         <ValuesRange valuesRange={option.valuesRange} />
       ) : null}
-    </View>
+    </Box>
   );
 };
 

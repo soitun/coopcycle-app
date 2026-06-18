@@ -5,7 +5,7 @@ import { HStack } from '@/components/ui/hstack';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import { useBaseTextColor } from '../../../styles/theme';
+import { useColorModeValue } from '../../../styles/theme';
 import {
   getNextShippingTimeAsText,
   isRestaurantOrderingAvailable,
@@ -46,7 +46,7 @@ export const CategoryBadge = ({ label }) => {
 };
 
 export const TimingBadge = ({ restaurant }) => {
-  const color = useBaseTextColor();
+  const color = useColorModeValue('rgb(23 23 23)', 'rgb(254 254 255)');
 
   const isAvailable = isRestaurantOrderingAvailable(restaurant);
   const showPreOrder = shouldShowPreOrder(restaurant);

@@ -22,7 +22,6 @@ import _ from 'lodash';
 import AddressUtils from '../utils/Address';
 import { localeDetector } from '../i18n';
 
-import { useBackgroundContainerColor } from '../styles/theme';
 import { LocateFixed } from 'lucide-react-native'
 
 const { width, height } = Dimensions.get('window');
@@ -74,7 +73,6 @@ function MapPickerScreen({
   const mapRef = useRef(null);
   const locationRef = useRef(null);
 
-  const backgroundColor = useBackgroundContainerColor();
   const initialRegion = useMemo(() => {
     if (!location) return null;
 
@@ -236,7 +234,7 @@ function MapPickerScreen({
         </View>
       </View>
 
-      <Box className="p-4 bottom-0 w-full" style={{ backgroundColor }}>
+      <Box className="p-4 bottom-0 w-full bg-background-50">
         <Box
           className='p-4 mb-4 h-20 border-2 border-gray-200 rounded-md justify-center'>
           {renderAddressDisplay()}

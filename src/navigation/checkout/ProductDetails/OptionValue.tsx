@@ -1,11 +1,7 @@
 import { Text } from '@/components/ui/text';
+import { Box } from '@/components/ui/box';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import {
-  useBackgroundContainerColor,
-  useBaseTextColor,
-  useSecondaryTextColor,
-} from '../../../styles/theme';
 import { formatPrice } from '../../../utils/formatting';
 import {
   getPriceForOptionValue,
@@ -90,11 +86,8 @@ const RangeOption = ({
   onPressDecrement,
   quantity,
 }) => {
-  const backgroundColor = useBackgroundContainerColor();
-  const priceColor = useSecondaryTextColor();
-
   return (
-    <View style={[styles.item, { gap: 16, backgroundColor }]}>
+    <Box className="bg-background-50" style={[styles.item, { gap: 16 }]}>
       <Range
         onPress={onPress}
         onPressIncrement={onPressIncrement}
@@ -104,12 +97,12 @@ const RangeOption = ({
       <TouchableOpacity style={styles.rangeTextWrapper} onPress={onPress}>
         <Text>{name}</Text>
         {price > 0 ? (
-          <Text style={[styles.price, { color: priceColor }]} note>
+          <Text className="text-typography-500" style={styles.price} note>
             +{`${formatPrice(price)}`}
           </Text>
         ) : null}
       </TouchableOpacity>
-    </View>
+    </Box>
   );
 };
 
@@ -121,25 +114,19 @@ const SimpleOption = ({
   index,
   sectionIndex,
 }) => {
-  const backgroundColor = useBackgroundContainerColor();
-  const radioButtonColor = useBaseTextColor();
-
   return (
     <TouchableOpacity
-      style={[styles.item, { backgroundColor }]}
+      className="bg-background-50"
+      style={styles.item}
       onPress={onPress}
       testID={`productOptions:${sectionIndex}:${index}`}>
       {
         <View
-          style={[
-            styles.radioButtonWrapper,
-            { borderColor: radioButtonColor },
-          ]}>
+          className="border-typography-950"
+          style={styles.radioButtonWrapper}>
           <View
-            style={[
-              styles.radioButton,
-              { backgroundColor: selected ? radioButtonColor : 'transparent' },
-            ]}
+            className={selected ? 'bg-typography-950' : 'bg-transparent'}
+            style={styles.radioButton}
           />
         </View>
       }

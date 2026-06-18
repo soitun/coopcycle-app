@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { Box } from '@/components/ui/box';
 import { Icon, ChevronRightIcon, CloseIcon } from '@/components/ui/icon';
 import { Printer as PrinterIcon } from 'lucide-react-native';
 import { Center } from '@/components/ui/center';
@@ -34,7 +35,6 @@ import {
   selectIsSunmiPrinter,
   selectPrinter,
 } from '../../redux/Restaurant/selectors';
-import { useBackgroundContainerColor } from '../../styles/theme';
 import { getMissingAndroidPermissions } from '../../utils/bluetooth';
 import Range from '../checkout/ProductDetails/Range';
 
@@ -82,8 +82,6 @@ function PrinterComponent({ devices, isScanning, _onPressScan }) {
     selectAutoAcceptOrdersPrintNumberOfCopies,
   );
   const isSumniPrinter = useSelector(selectIsSunmiPrinter);
-
-  const backgroundColor = useBackgroundContainerColor();
 
   const { t } = useTranslation();
 
@@ -138,7 +136,7 @@ function PrinterComponent({ devices, isScanning, _onPressScan }) {
         ItemSeparatorComponent={ItemSeparator}
       />
       {autoAcceptOrdersEnabled ? (
-        <View style={[styles.quantityWrapper, { backgroundColor }]}>
+        <Box className="bg-background-50" style={styles.quantityWrapper}>
           <Text>{t('AUTO_ACCEPT_ORDERS_PRINT_NUMBER_OF_COPIES')}:</Text>
           <Range
             minimum={0}
@@ -150,7 +148,7 @@ function PrinterComponent({ devices, isScanning, _onPressScan }) {
               dispatch(setPrintNumberOfCopies(printNumberOfCopies + 1))
             }
           />
-        </View>
+        </Box>
       ) : null}
     </View>
   );

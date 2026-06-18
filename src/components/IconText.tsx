@@ -1,8 +1,6 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import {
-  useBaseTextColor,
-  useBlackAndWhiteTextColor,
   useIconColor,
 } from '../styles/theme';
 import { Box } from '@/components/ui/box';
@@ -34,9 +32,6 @@ const IconText: React.FC<IconTextProps> = ({
   disabled = false,
   testID,
 }) => {
-  // Theme colors
-  const textColor = useBaseTextColor();
-  const labelTextColor = useBlackAndWhiteTextColor();
   const defaultIconColor = useIconColor();
   const content = (
     <HStack style={[styles.container, { opacity: disabled ? 0.5 : 1 }]}>
@@ -50,10 +45,10 @@ const IconText: React.FC<IconTextProps> = ({
         {label && (
           <Text
             size="sm"
+            className="text-black dark:text-white"
             style={{
               lineHeight: 22,
               textTransform: 'uppercase',
-              color: labelTextColor,
               fontWeight: 500,
             }}>
             {label}
@@ -61,10 +56,8 @@ const IconText: React.FC<IconTextProps> = ({
         )}
         <Text
           size={textSize}
-          style={{
-            lineHeight: 22,
-            color: textColor,
-          }}>
+          className="text-typography-950"
+          style={{ lineHeight: 22 }}>
           {text}
         </Text>
       </Box>

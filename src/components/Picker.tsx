@@ -1,12 +1,12 @@
 import { Picker as RNPicker } from '@react-native-picker/picker';
 import _ from 'lodash';
 import React from 'react';
-import { useBaseTextColor } from '../styles/theme';
+import { useColorModeValue } from '../styles/theme';
 
 // wrapper for Picker component with some defaults to support the dark mode
 
 const InnerPicker = props => {
-  const baseTextColor = useBaseTextColor();
+  const baseTextColor = useColorModeValue('rgb(23 23 23)', 'rgb(254 254 255)');
 
   return (
     <RNPicker

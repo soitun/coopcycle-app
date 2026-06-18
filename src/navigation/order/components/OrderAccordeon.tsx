@@ -20,7 +20,6 @@ import { Text } from '@/components/ui/text';
 import IconText from '../../../components/IconText';
 import TaskTagsList from '../../../components/TaskTagsList';
 import TaskTypeIcon from '../../../components/TaskTypeIcon';
-import { useBaseTextColor } from '../../../styles/theme';
 import { Task, TaskTag } from '../../../types/task';
 import { addDayIfNotToday, getPackagesSummary, getTimeFrame } from '../../task/components/utils';
 import { getStatusBackgroundColor, getTaskTitleForOrder } from '../utils';
@@ -142,8 +141,6 @@ function OrderAccordeon({ task, navigation, route }: OrderAccordeonProps) {
   const address = task.address.streetAddress;
   const packageType = getPackagesSummary(task);
   const comments = task.comments;
-  const headerText = useBaseTextColor();
-
   // Function to handle location press
   const handleLocationPress = () => {
     showLocation({
@@ -188,9 +185,9 @@ function OrderAccordeon({ task, navigation, route }: OrderAccordeonProps) {
                     <HStack space="xs" className="mb-2" style={{ alignItems: 'center' }}>
                       <TaskTypeIcon colored task={task} />
                       <AccordionTitleText
+                        className="text-typography-950"
                         style={{
                           textTransform: 'uppercase',
-                          color: headerText,
                           marginLeft: 6,
                         }}
                       >
@@ -215,11 +212,11 @@ function OrderAccordeon({ task, navigation, route }: OrderAccordeonProps) {
                       </View>
                     </HStack>
                     <HStack space="md" style={{ alignItems: 'center' }}>
-                      <Text bold style={{ color: headerText }}>
+                      <Text bold className="text-typography-950">
                         {getTaskTimeFrame(task, "\n")}
                       </Text>
                       <Divider orientation="vertical" className="h-8" />
-                      <Text bold style={{ color: headerText, flexShrink: 1 }}>
+                      <Text bold className="text-typography-950" style={{ flexShrink: 1 }}>
                         {address}
                       </Text>
                     </HStack>

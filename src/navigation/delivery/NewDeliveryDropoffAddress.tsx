@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
-  useBackgroundContainerColor,
+  useColorModeValue,
   usePrimaryColor,
 } from '../../styles/theme';
 import ModalFormWrapper from './ModalFormWrapper';
@@ -18,7 +18,7 @@ import { selectCountry } from '@/src/redux/App/selectors';
 import { selectStore } from '@/src/redux/Delivery/selectors';
 
 function NewDeliveryDropoffAddress({ navigation, route }) {
-  const backgroundColor = useBackgroundContainerColor();
+  const backgroundColor = useColorModeValue('rgb(246 246 246)', 'rgb(39 38 37)');
   const primaryColor = usePrimaryColor();
 
   const country = useSelector(selectCountry);

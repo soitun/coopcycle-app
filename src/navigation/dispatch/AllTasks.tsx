@@ -1,4 +1,5 @@
 import { ActivityIndicator, BackHandler, InteractionManager, View } from 'react-native';
+import { Box } from '@/components/ui/box';
 import { Center } from '@/components/ui/center';
 import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
@@ -14,7 +15,6 @@ import {
 } from '../../redux/Dispatch/selectors';
 import { selectSelectedDate } from '../../shared/logistics/redux';
 import { useAllTasks } from './useAllTasks';
-import { useBackgroundHighlightColor } from '../../styles/theme';
 import AddButton from './components/AddButton';
 import GroupedTasks from './components/GroupedTasks';
 import { useTaskListsContext } from '../courier/contexts/TaskListsContext';
@@ -32,7 +32,6 @@ export default function AllTasks({ navigation, route }) {
   const dispatch = useDispatch();
 
   const { isLoading, isFetching, isError, refetch } = useAllTasks(selectedDate);
-  const bgHighlightColor = useBackgroundHighlightColor();
 
   const handleRefetch = () => {
     context?.clearSelectedTasks();
@@ -79,13 +78,13 @@ export default function AllTasks({ navigation, route }) {
 
   return (
     <>
-      <View style={{ backgroundColor: bgHighlightColor }}>
+      <Box className="bg-background-100">
         <AddButton
           testID="dispatchNewDelivery"
           onPress={() => navigation.navigate('DispatchNewDelivery')}>
           <Text style={{ fontWeight: '700' }}>{selectedDate.format('ll')}</Text>
         </AddButton>
-      </View>
+      </Box>
       <GroupedTasks
         isFetching={isFetching}
         refetch={handleRefetch}

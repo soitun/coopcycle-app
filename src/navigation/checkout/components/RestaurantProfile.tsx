@@ -7,10 +7,7 @@ import { Button, ButtonText } from '@/components/ui/button';
 import { ScrollView, StyleSheet, View, Image } from 'react-native';
 import { RestaurantBadge } from '../../../components/RestaurantBadge';
 import { RestaurantTag } from '../../../components/RestaurantTag';
-import {
-  useBaseTextColor,
-  useSecondaryTextColor,
-} from '../../../styles/theme';
+import { useColorModeValue } from '../../../styles/theme';
 import { TimingBadge } from './RestaurantBadges';
 import DangerAlert from '../../../components/DangerAlert';
 import i18n from '../../../i18n';
@@ -159,8 +156,7 @@ function BannerOverlay({ isOrderingAvailable, showPreOrder }) {
 }
 
 function RestaurantProfile({ restaurant, openingHoursSpecification, onInfo }) {
-  const stroke = useBaseTextColor();
-  const textSecondary = useSecondaryTextColor();
+  const stroke = useColorModeValue('rgb(23 23 23)', 'rgb(254 254 255)');
 
   const isOrderingAvailable = useMemo(
     () => isRestaurantOrderingAvailable(restaurant),
@@ -224,7 +220,7 @@ function RestaurantProfile({ restaurant, openingHoursSpecification, onInfo }) {
         </View>
         {restaurant.description ? (
           <View style={styles.description}>
-            <Text style={{ color: textSecondary }}>
+            <Text className="text-typography-500">
               {restaurant.description}
             </Text>
           </View>

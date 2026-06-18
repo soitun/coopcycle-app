@@ -5,12 +5,10 @@ import { Text } from '@/components/ui/text';
 import TaskTypeIcon from '@/src/components/TaskTypeIcon';
 import { getTaskTimeFrame } from '../../order/components/OrderAccordeon';
 import { useTranslation } from 'react-i18next';
-import { useBaseTextColor } from '@/src/styles/theme';
 import { getTaskTitleForOrder } from '../../order/utils';
 
 export const Header = ({ task }) => {
   const { t } = useTranslation();
-  const headerText = useBaseTextColor();
   const taskTitle = getTaskTitleForOrder(task);
   const address = task.address.streetAddress;
 
@@ -22,10 +20,10 @@ export const Header = ({ task }) => {
           task={task}
         />
         <Text
+          className="text-typography-950"
           style={{
             lineHeight: 22,
             textTransform: 'uppercase',
-            color: headerText,
             marginLeft: 12,
           }}
         >
@@ -40,11 +38,11 @@ export const Header = ({ task }) => {
           paddingBottom: 8,
         }}
       >
-        <Text bold style={{ color: headerText }}>
+        <Text bold className="text-typography-950">
           {getTaskTimeFrame(task, '\n')}
         </Text>
         <Divider orientation="vertical" className="h-8" />
-        <Text bold style={{ color: headerText, flexShrink: 1 }}>
+        <Text bold className="text-typography-950" style={{ flexShrink: 1 }}>
           {address}
         </Text>
       </HStack>

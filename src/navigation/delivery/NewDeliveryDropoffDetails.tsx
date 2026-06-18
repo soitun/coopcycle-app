@@ -11,7 +11,7 @@ import {
   selectTimeSlots,
 } from '../../redux/Delivery/selectors';
 import {
-  useBackgroundContainerColor,
+  useColorModeValue,
   usePrimaryColor,
 } from '../../styles/theme';
 import TimeSlotPicker from './components/TimeSlotPicker';
@@ -32,7 +32,7 @@ import { FormField } from '@/src/navigation/task/components/FormField';
 import { Textarea, TextareaInput } from '@/components/ui/textarea';
 
 function NewDeliveryDropoffDetails({ navigation, route }) {
-  const backgroundColor = useBackgroundContainerColor();
+  const backgroundColor = useColorModeValue('rgb(246 246 246)', 'rgb(39 38 37)');
   const primaryColor = usePrimaryColor();
   const { t } = useTranslation();
 

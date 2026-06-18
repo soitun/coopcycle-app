@@ -3,7 +3,7 @@ import { Polyline } from 'react-native-maps';
 import { useSelector } from 'react-redux';
 import { decode } from '@mapbox/polyline';
 
-import { useSecondaryTextColor } from '../styles/theme';
+import { useColorModeValue } from '../styles/theme';
 
 import { getTaskListTasks } from '../shared/src/logistics/redux/taskListUtils';
 import { selectTasksEntities } from '../shared/logistics/redux';
@@ -20,7 +20,7 @@ type TaskListPolylinesProps = {
 const TaskListPolylines: React.FC<TaskListPolylinesProps> = ({
     taskLists
 }) => {
-  const unassignedPolylineColor = useSecondaryTextColor();
+  const unassignedPolylineColor = useColorModeValue('rgb(140 140 140)', 'rgb(163 163 163)');
   const isHideUnassignedFromMap = useSelector(selectIsHideUnassignedFromMap);
   const isPolylineOn = useSelector(selectIsPolylineOn);
   const tasksEntities = useSelector(selectTasksEntities);

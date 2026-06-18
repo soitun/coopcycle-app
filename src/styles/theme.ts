@@ -72,30 +72,6 @@ export const useSecondaryContentColor = () => {
   return serverTheme?.['secondary-content'] ?? fallback;
 };
 
-export const useBaseTextColor = () => {
-  // text-typography-950
-  return useColorModeValue('rgb(23 23 23)', 'rgb(254 254 255)');
-};
-
-export const useSecondaryTextColor = () => {
-  // text-typography-500
-  return useColorModeValue('rgb(140 140 140)', 'rgb(163 163 163)');
-};
-
-export const useBackgroundContainerColor = () => {
-  // bg-background-50
-  return useColorModeValue('rgb(246 246 246)', 'rgb(39 38 37)');
-};
-
-export const useBackgroundHighlightColor = () => {
-  return useColorModeValue('#f2f2f2', '#353030');
-};
-
-// IconText component
 export const useIconColor = () => {
   return useColorModeValue('#424242', '#B0BEC5');
-};
-
-export const useBlackAndWhiteTextColor = () => {
-  return useColorModeValue('#000000', '#FFFFFF');
 };
