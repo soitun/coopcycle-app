@@ -20,7 +20,7 @@
     "@expo/html-elements": "0.13.7",
     "@gluestack-ui/core": "^3.0.10",
     "@gluestack-ui/utils": "^3.0.7",
-    "@gorhom/bottom-sheet": "^5.2.6",
+    "@gorhom/bottom-sheet": "^5.2.14",
     "@invertase/react-native-apple-authentication": "^2.2.2",
     "@legendapp/motion": "^2.4.0",
     "@mapbox/polyline": "^1.2.1",
