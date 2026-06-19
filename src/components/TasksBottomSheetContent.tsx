@@ -125,7 +125,10 @@ export default function TasksBottomSheetContent({ modalMarkers = [], onListedTas
               return (
                 <Pressable
                   style={[styles.taskRow, { borderTopColor: colors.border, backgroundColor: colors.background }]}
-                  onPress={() => onListedTaskPress(item)} // 
+                  onPress={() => {
+                    bsContext?.handleClose();
+                    onListedTaskPress(item);
+                  }}
                 >
                   <View style={styles.colIcon}>
                     <FAIcon name={iconName} size={15} color={iconColor} />
